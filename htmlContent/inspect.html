@@ -12,23 +12,23 @@
         
         <div id="shadmessage">
             <div id="subscriptionexpiredwrapper">
-                <span data-l10n="subscriptionexpiredPrefix" data-l10n-args='["Edge Inspect"]'></span>
-                <a id="renewlink" data-l10n="renewlink"></a>
-                <span data-l10n="subscriptionexpiredSuffix"></span>
+                <span>{{INSPECT_subscriptionexpiredPrefix}}</span>
+                <a id="renewlink">{{INSPECT_renewlink}}</a>
+                <span>{{INSPECT_subscriptionexpiredSuffix}}</span>
                 <a id="subscriptionexpiredwrapper-remove" class="devicecancel md-btn" title="Remove"></a>                    
             </div>
 	    
             
             <div id="screenshotsarepremiumwrapper">
-                <span data-l10n="screenshotsarepremiumPrefix" data-l10n-args='["Edge Inspect"]'></span>
-                <a id="ssupgradelink" data-l10n="upgradelink"></a>
+                <span>{{INSPECT_screenshotsarepremiumPrefix}}</span>
+                <a id="ssupgradelink">{{INSPECT_upgradelink}}</a>
                 <a id="screenshotsarepremiumwrapper-remove" class="devicecancel md-btn" title="Remove"></a>                    
             </div>                
 	    
 	    
             <div id="seconddeviceispremiumwrapper">
-                <span data-l10n="seconddeviceispremiumPrefix" data-l10n-args='["Edge Inspect"]'></span>
-                <a id="sdupgradelink" data-l10n="upgradelink"></a>
+                <span>{{INSPECT_seconddeviceispremiumPrefix}}</span>
+                <a id="sdupgradelink">{{INSPECT_upgradelink}}</a>
                 <a id="seconddeviceispremiumwrapper-remove" class="devicecancel md-btn" title="Remove"></a>                    
             </div>
 
@@ -41,9 +41,9 @@
 -->
 
             <div id="buyitnowwrapper" >
-                <span data-l10n="buyitnowPrefix"></span>
-                <a id="buyitnowlink" href="#" data-l10n="upgrade"></a> 
-                <span data-l10n="buyitnowSuffix"></span>
+                <span>{{INSPECT_buyitnowPrefix}}</span>
+                <a id="buyitnowlink" href="#">{{INSPECT_upgrade}}</a> 
+                <span>{{INSPECT_buyitnowSuffix}}</span>
                 <a id="buyitnowwrapper-remove" class="devicecancel md-btn" title="Remove"></a>                   
             </div>
         </div>                                            
@@ -55,7 +55,7 @@
                 </div>
             </div>
              <div id="submenuoverlay">
-                 <div class="submenurow" id="remove"><a href="#" class="submenutext" data-l10n="remove"></a></div>
+                 <div class="submenurow" id="remove"><a href="#" class="submenutext">{{INSPECT_remove}}</a></div>
                  <!--<div class="submenurow" id="downloadiso"><a href="#" id="downloadisolink" class="submenutext" target="_blank" data-l10n='downloadiso' data-l10n-args='["Edge Inspect","iPad&reg;, iPhone&reg;","iPod&reg;"]'></a></div>-->
                  <!--<div class="submenurow" id="downloadandroid"><a href="#" id="downloadandroidlink" class="submenutext" target="_blank" data-l10n='downloadandroid' data-l10n-args='["Edge Inspect","Android&trade;"]'></a></div>-->
                  <!--<div class="submenurow" id="downloadamazon"><a href="#" id="downloadamazonlink" class="submenutext" target="_blank" data-l10n='downloadandroid' data-l10n-args='["Edge Inspect","Kindle"]'></a></div>-->
@@ -63,16 +63,16 @@
                  <!--<div class="submenurow" id="problems"><a href="http://adobe.com/go/edgeinspect_problem" class="submenutext" target="_blank" data-l10n="problems"></a></div>-->
              </div>
             <div id="devicelist">
-                <div id="waitingdiv"><div id="waitingspinner" class="spinner"></div><span id="waiting" data-l10n="waiting"></span></div>
-                <div id="syncbrowseoff" data-l10n="syncbrowseoff"></div>
-                <div id="dmerror"><span data-l10n="dmerror" data-l10n-args='["Adobe Edge Inspect"]'></span><br /><a href="#" id="getedgeinspectlink" data-l10n="getedgeinspect" data-l10n-args='["Edge Inspect"]' ></a></div>
-                <div id="dmexpired" data-l10n="dmexpired" data-l10n-args='["Adobe Edge Inspect"]'></div>
+                <div id="waitingdiv"><div id="waitingspinner" class="spinner"></div><span id="waiting">{{INSPECT_waiting}}</span></div>
+                <div id="syncbrowseoff">{{INSPECT_syncbrowseoff}}</div>
+                <div id="dmerror"><span>{{INSPECT_dmerror}}</span><br /><a href="#" id="getedgeinspectlink">{{INSPECT_getedgeinspect}}</a></div>
+                <div id="dmexpired">{{INSPECT_dmexpired}}</div>
 		
                 <!--	This is an optional welcome message to be displayed to the user at first open. It will continue to be displayed
                         until the user acknowledges it, then will never be seen again. -->
                 <div id="welcomeDiv">
-                    <div id="welcomemessage" data-l10n="welcomemessage" data-l10n-args='["Edge Inspect"]'><br /></div>
-                    <div id="welcomeaction" data-l10n="welcomeaction"></div>
+                    <div id="welcomemessage">{{INSPECT_welcomemessage}}<br /></div>
+                    <div id="welcomeaction">{{INSPECT_welcomeaction}}</div>
                 </div>
                 <span id="pairingdevices">
                     <div id="pairinglistheader"></div>
@@ -90,11 +90,11 @@
                 <span class="topbartitle">Edge Inspect</span>
             </span>
             <span class="breadcrumb"></span>
-            <span class="topbarsubtitle" data-l10n="remove"></span>
+            <span class="topbarsubtitle">{{INSPECT_remove}}</span>
         </div>
         <div class="clearboth">
             <div class="hl message">
-                <div id="removetext" class="clearrow" data-l10n="removetext"></div>
+                <div id="removetext" class="clearrow">{{INSPECT_removetext}}</div>
             </div>
             <div id="removelist">
                 <span id="removeconnected">
@@ -109,10 +109,10 @@
     <div id="devicelistfooter"> 
         <div id="progressdiv" class="spinner"></div>
         <div id="cancelscreenshotdiv">
-            <div id="cancelscreenshot" data-l10n="cancelscreenshot"></div>
+            <div id="cancelscreenshot">{{INSPECT_cancelscreenshot}}</div>
         </div>
         <div id="completedscreenshotdiv">
-            <div id="completedscreenshot" data-l10n="completedscreenshot"></div>
+            <div id="completedscreenshot">{{INSPECT_completedscreenshot}}</div>
         </div>
         <a id="togglechrome" class="lg-btn" title="Full Screen"></a>
         <a id="forcerefresh" class="lg-btn" title="Refresh all devices"></a>

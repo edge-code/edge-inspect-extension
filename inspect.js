@@ -33,7 +33,8 @@ define(function (require, exports, module) {
         EdgeInspect         = require('lib/inspect/skylab'),
         EventMap            = require("lib/eventmap"),
         SkylabPopup         = require("lib/inspect/skylabpopup"),
-        SkylabView          = require("lib/inspect/skylabview");
+        SkylabView          = require("lib/inspect/skylabview"),
+        Strings             = require("strings");
     
     // Brackets modules
     var CommandManager      = brackets.getModule("command/CommandManager"),
@@ -227,7 +228,7 @@ define(function (require, exports, module) {
         var d = $.Deferred();
         var evtId = ".inspectView";
         d.resolve();
-        $mainContent = (Mustache.render(inspectHtml));
+        $mainContent = (Mustache.render(inspectHtml, Strings));
         $("body").append($mainContent);
         $inspect = $("#inspect");
         $inspect.on("Inspect:redraw", repositionPopup);
