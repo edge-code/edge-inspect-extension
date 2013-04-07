@@ -1,0 +1,563 @@
+#topbar, #removetopbar, #connecteddevices, #removedevices, 
+#devicelistfooter {
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.inspectPopoverArrow {
+    position: absolute;
+    top: 26px;
+    right: -21px;
+    width: 30px;
+    height: 14px;
+    margin: 0;
+    -webkit-transform: rotate(90deg);
+    background: no-repeat -webkit-image-set(url("../img/popover_arrow.png") 1x, url("../img/popover_arrow@2x.png") 2x);
+}
+
+#inspect {
+    color: #454545;
+    font-size: 12px;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    min-height: 100px;
+    max-height: 460px;
+    top: 50px;
+    right: 15px;
+    position: absolute;
+    background-color: #dfe2e2;
+    z-index: 5000;
+    cursor: default;
+    -webkit-font-smoothing: antialiased;
+    display: none;   
+}
+
+#inspect.visible {
+    display: block;
+}
+
+#mainpanel, #removepanel {
+    width: 300px;
+    margin: 0;
+    min-width: 300px;
+    padding: 0;
+}
+
+#topbar, #removetopbar {
+    position: relative;
+    height: 54px;
+    line-height: 56px;
+}
+
+#removetopbar {
+    font-size: 18px;
+    padding: 0 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%; /* need this for text overflow */
+}
+
+#topbarleft {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+}
+
+#topbarright {
+    position: absolute;
+    right: 15px;
+    top: 18px;
+}
+
+#removetopbarright, .pairingrightdiv {
+    float: right;
+}
+
+.passcode, .pairingrightdiv {
+   height: 30px;
+}
+
+.pairingrightdiv {
+    width: 242px;
+}
+
+.topbarsubtitle {
+    text-shadow: 0 1px 0 #fff;
+}
+
+#logo {
+    display: block;
+    padding: 0 0 0 35px;
+    color: #454545;
+    line-height: 27px;
+    font-size: 18px;
+    text-shadow: 0px 1px 0px rgba(255, 255, 255, 1);
+    background: no-repeat -webkit-image-set(url("../img/reflow_in_panel_icon.png") 1x, url("../img/reflow_in_panel_icon@2x.png") 2x);
+}
+
+#down {
+    display: inline-block;
+    vertical-align: middle;
+    height: 15px;
+    width: 15px;
+    background: no-repeat -webkit-image-set(url("../img/unit_drop_light.png") 1x, url("../img/unit_drop_light@2x.png") 2x);
+}
+
+#inspectToggle {
+    display: block;
+    height: 23px;
+    width: 56px;
+}
+
+#devicelist, .clearrow, .clearboth, #removelist {
+    clear: both;
+}
+
+#devicelist, #removelist {
+    max-height: 300px;
+    width: 270px;
+    margin: 0 auto 4px auto;
+    overflow-y: auto;
+    background: #D2D4D3;
+    border-radius: 3px;
+    border: 1px solid #b8b8b8;
+    font-size: 12px;
+}
+
+#removelist {
+    padding: 0;
+}
+
+.hl {
+    line-height: 30px;
+}
+
+.hl:hover .deviceeject {
+    visibility: visible;
+}
+
+.hl:hover .devicerefresh {
+    visibility: visible;
+}
+
+span#connecteddevices {
+    display: block;
+}
+
+.devicename {
+    display: block;
+    float: left;
+    height: 30px;
+    text-shadow: 0 1px 0 white;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0 8px;
+    width: 226px;
+}
+
+.devicebuttons {
+    float: right;
+    height: 30px;
+    margin: 0 5px 0 0;
+}
+
+.deviceeject {
+    visibility:hidden;
+}
+
+.devicerefresh {
+    visibility:hidden;
+}
+
+#machineinfoheader {
+    clear:both;
+}
+
+#devicelistfooter {
+    height: 44px;
+    padding: 0 15px;
+    clear: both;
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;   
+}
+
+#submenuoverlay {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.4);
+    border-radius: 3px;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.3);
+    display: none;
+    left: 2px;
+    padding: 4px 0;
+    position:absolute;
+    top: 44px;
+    min-width: 200px;
+    z-index: 100;
+    cursor: default;
+}
+
+.submenutext {
+    color: #000;
+    display: block;
+    font-size: 13px;
+    height: 22px;
+    line-height: 22px;
+    padding: 0 15px;
+    text-decoration: none;
+    cursor: default;
+}
+
+.submenutext:hover {
+    background: #e0f0fa;
+    color: #000;
+}
+
+.submenutext:active {
+    background: #bee0f5;
+}
+
+.removehead {
+    font: 14px;
+    font-weight: bold;
+    color: #7f7f7f;
+    clear:both;
+}
+
+#removetext, #machineinfotext {
+    color: #666;
+    font-size: 11px;
+    line-height: 15px;
+    margin: 0 15px 0;
+    padding-bottom: 10px;
+    text-shadow: 0 1px 0 #fff;
+}
+
+#machineinfotext {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    word-spacing: 3px;   
+}
+.message:hover {
+    background: none !important;
+}
+
+
+.removesubtext {
+    color: #777;
+    display: block;
+    font-size: 11px;
+    height: 11px;
+    line-height: 4px;
+}
+
+.floatleft {
+    float:left;
+}
+
+div.passcode {
+    padding: 0 0 0 7px;
+}
+
+span.passcodefield {
+    float: left;
+    margin: 4px 7px 0 0;
+}
+
+input.passcodefield, input.passcodefielderror  {
+    padding-left: 5px;
+    width: 69px;
+    height: 21px;
+    border: 1px solid #a5a8a8;
+    background: #fff;
+    box-shadow: inset 0 1px 0 rgba(0,0,0,.15);
+    color: #454545;
+}
+
+input.passcodefielderror {
+    border: 1px solid #bc0023;
+}
+
+input.passcodefielderror:focus {
+    border: 1px solid #bc0023;
+    box-shadow: 0 0 0 2px #ef71ad;
+}
+
+input {
+    outline: none;
+}
+
+#waitingspinner {
+    height: 16px;
+    width: 16px;
+    display: inline-block;
+    margin-left: 8px;
+    position: relative;
+    top: 3px;
+}
+
+#waiting {
+    line-height: 30px;
+    margin: 0px 15px 0px 8px;
+    text-indent: 0px;
+}
+
+#dmerror, #dmexpired {
+    text-align: center;
+    margin: 15px auto;
+}
+
+#syncbrowseoff {
+    min-height: 30px;
+    line-height: 30px;
+    padding: 0 8px;
+    background: #C7C9C9;
+}
+
+.pairingdevicename {
+    float: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-shadow: 0 1px 0 #fff;
+    height: 30px;
+    line-height: 30px;
+    margin: 0 3px 0 0;
+    overflow: hidden;
+    width: 142px;
+}
+
+#removeback {
+    display: inline-block;
+    width: 27px;
+    height: 0;
+    padding: 27px 0 0 0;
+    background: no-repeat -webkit-image-set(url("../img/reflow_in_panel_icon.png") 1x, url("../img/reflow_in_panel_icon@2x.png") 2x);
+    vertical-align: middle;
+}
+
+.breadcrumb {
+    display: inline-block;
+    height: 10px;
+    margin: 0 5px;
+    width: 5px;
+}
+
+.removepagination {
+    font-size:12px;
+    color: #fff;
+    padding: 8px 0 0 15px;
+}
+
+#progressdiv {
+    height: 16px;
+    margin-top: 12px;
+    width: 16px;
+    float:left;
+}
+
+.md-btn {
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    margin: 7px 0 0 -3px;
+}
+
+.lg-btn {
+    float: right;
+    margin: 11px 0 0 11px;
+}
+
+[disabled=disabled] {
+    cursor: default;
+    opacity: 0.4;
+    pointer-events: none;
+}
+
+#bottom [disabled=disabled] {
+    opacity: 0.2;
+}
+
+#forcerefresh {
+    width: 19px;
+    height: 18px;
+    background: no-repeat -webkit-image-set(url("../img/inspect_refresh.png") 1x, url("../img/inspect_refresh@2x.png") 2x);
+}
+
+#togglechrome {
+    width: 20px;
+    height: 18px;
+    background: no-repeat -webkit-image-set(url("../img/inspect_togglechrome.png") 1x, url("../img/inspect_togglechrome@2x.png") 2x);
+}
+
+#togglechrome.fulloff {
+    background-image: -webkit-image-set(url("../img/inspect_exitfullscreen.png") 1x, url("../img/inspect_exitfullscreen@2x.png") 2x);
+}
+
+#cancelscreenshotdiv, #completedscreenshotdiv, #removepanel, #waitingdiv, #syncbrowseoff, #dmerror, #dmexpired, #progressdiv, #shadmessage, #periodicsurveywrapper, #subscriptionexpiredwrapper, #screenshotsarepremiumwrapper, #seconddeviceispremiumwrapper, #welcomeDiv, #templates, #subscriptionexpiredwrappers, #screenshotsarepremiumwrappers, #seconddeviceispremiumwrappers, #buyitnowwrapper {
+    display: none;
+}
+
+#cancelscreenshot, #completedscreenshot {
+    color: #0083e8;
+    font-size: 11px;
+    float: left;
+    margin-top: 15px;
+    margin-left: 7px;
+    text-shadow: 0px 1px 0px rgba(0,0,0,0.75);
+    cursor: pointer;
+}
+
+#completedscreenshot {
+    margin-left: 0 !important;
+}
+
+#cancelscreenshot:active, , #completedscreenshot:active {
+    color: #ccc;
+}
+
+/*#shadmessage {
+    background: #5b5e5f;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    color: #fff !important;
+    font-size: 11px;
+    line-height: 15px;
+    padding: 10px 33px 10px 15px;
+    position: relative;
+}*/
+
+#shadmessage a, #dmerror a {
+  color: #0083e8;
+  text-decoration: none;
+}
+
+#shadmessage a:hover, #dmerror a:hover {
+    text-decoration: underline;
+}
+
+#shadmessage a:focus, #dmerror a:focus {
+  outline: none;
+}
+
+#getedgeinspectlink {
+}
+
+#periodicsurveywrapper,
+#subscriptionexpiredwrapper,
+#screenshotsarepremiumwrapper,
+#seconddeviceispremiumwrapper,
+#buyitnowwrapper {
+   	font-size: 11px;
+    line-height: 15px;
+    margin: 3px 0 15px 0;
+    position: relative;
+    background: #D2D4D3;
+    border-top: 1px #B8B8B8 solid;
+    border-bottom: 1px #B8B8B8 solid;
+    padding: 15px;
+}
+
+#shadmessage-remove, #periodicsurveywrapper-remove, #subscriptionexpiredwrapper-remove, #screenshotsarepremiumwrapper-remove, #seconddeviceispremiumwrapper-remove,  #buyitnowwrapper-remove{
+  position: absolute;
+  top: 5px;
+  right: 14px;
+}
+
+#buyitnowwrapper .md-btn {
+    margin: 17px 0 0 -3px;
+}
+
+#welcomeDiv {
+    background: #5b5e5f;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding: 20px 15px;
+}
+
+#welcomeaction {
+    color: #0083e8;
+    cursor: pointer;
+    margin: 8px 0 40px;
+}
+
+#welcomeaction:active {
+    color: #0083e8;
+    text-decoration: underline;
+}
+
+#welcomemessage {
+    color: #fff;
+    font-size: 12px;
+    line-height: 16px;
+}
+
+/* Spinner */
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    background: no-repeat center center -webkit-image-set(url("../img/inspect_spinner.gif") 1x, url("../img/inspect_spinner@2x.gif") 2x);
+    background-size: 100%;
+}
+
+.devicecancel, .deviceremove {
+    background: center center no-repeat -webkit-image-set(url("../img/inspect_remove.png") 1x, url("../img/inspect_remove@2x.png") 2x);
+}
+
+.devicecheck {
+    background: center center no-repeat -webkit-image-set(url("../img/inspect_confirm.png") 1x, url("../img/inspect_confirm@2x.png") 2x);
+}
+
+.deviceeject,
+#removeconnected .deviceremove {
+    background: center center no-repeat -webkit-image-set(url("../img/inspect_eject.png") 1x, url("../img/inspect_eject@2x.png") 2x); 
+}
+
+
+/* Images and such ------------------------------------------------------------------------------- */
+
+.toggleon {
+    background: no-repeat -webkit-image-set(url("../img/slideswitch_on.png") 1x, url("../img/slideswitch_on@2x.png") 2x);
+}
+
+.toggleoff {
+    background: no-repeat -webkit-image-set(url("../img/slideswitch_off.png") 1x, url("../img/slideswitch_off@2x.png") 2x);
+}
+
+#progressdiv {
+    background: no-repeat -webkit-image-set(url("../img/inspect_spinner.gif") 1x, url("../img/inspect_spinner@2x.gif") 2x);
+    background-size: 100%;
+}
+
+.breadcrumb {
+    background: no-repeat -webkit-image-set(url("../img/breadcrumb.png") 1x, url("../img/breadcrumb@2x.png") 2x);
+}
+
+
+
+/**
+ *  Brackets Toolbar Icon Styling
+ */
+#toolbar-inspect {
+  position: relative;
+  top: 2px;
+  padding-right: 8px;
+  content: "";
+  background: url("../img/inspect_icon@2x.png");
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+#toolbar-inspect:hover {
+  background-position: 0 -16px;
+}
+#toolbar-inspect.active {
+  background-position: 0 -32px;
+}
+#toolbar-inspect.active:hover {
+  background-position: 0 -48px;
+}
