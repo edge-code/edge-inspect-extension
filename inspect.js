@@ -166,13 +166,6 @@ define(function (require, exports, module) {
         
     
     /**
-    * Tell inspect to refresh.
-    */
-    function dispatchURLChange() {
-
-    }
-    
-    /**
      * @private
      * Callback for "request" event handlers to override the HTTP ServerResponse.
      */
@@ -255,19 +248,6 @@ define(function (require, exports, module) {
         });
     }
     
-    /**
-    * Start web server if necessary and when HTML has been
-    * generated, notify inspect.
-    * @param evt Event with previewFolder parameter that points
-    * to the path where HTML was generated.
-    */
-    function handleHTMLChange(evt) {
-        if (evt && evt.previewFolder) {
-            startServer(evt.previewFolder);
-        }
-        dispatchURLChange();
-    }
-    
 
     /**
     * Stop web server.
@@ -286,11 +266,17 @@ define(function (require, exports, module) {
     
     
     function _onDocumentChange() {
-        console.log('document changed');
+        var projectRoot = ProjectManager.getProjectRoot().fullPath;
+        var doc = DocumentManager.getCurrentDocument().file.fullPath;
+        var url = doc.substring(projectRoot.length, doc.length);
+        $inspect.trigger("Inspect:urlchange", url);
     }
     
     function _onDocumentSaved() {
-        // force a push back down to Inspect. 
+        var projectRoot = ProjectManager.getProjectRoot().fullPath;
+        var doc = DocumentManager.getCurrentDocument().file.fullPath;
+        var url = doc.substring(projectRoot.length, doc.length);
+        $inspect.trigger("Inspect:urlchange", url);
     }
     
     function listenForDocumentChanges() {
