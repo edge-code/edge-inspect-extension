@@ -38,17 +38,21 @@ define(function (require, exports, module) {
     
     // Brackets modules
     var CommandManager      = brackets.getModule("command/CommandManager"),
+        DocumentManager     = brackets.getModule("document/DocumentManager"),
         EditorManager       = brackets.getModule("editor/EditorManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
+        FileUtils           = brackets.getModule("file/FileUtils"),
         KeyEvent            = brackets.getModule("utils/KeyEvent"),
         Menus               = brackets.getModule("command/Menus"),
-        PreferencesManager  = brackets.getModule("preferences/PreferencesManager");
+        NodeConnection      = brackets.getModule("utils/NodeConnection"),
+        PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
+        ProjectManager       = brackets.getModule("project/ProjectManager");
     
     var INSPECT_URL = "http://127.0.0.1:8007/",
         _ON_CLASS = "followOn",
         _OFF_CLASS = "followOff",
         _skyLabInited = false;
-    
+
     var $mainContent,
         $inspect,
         firstRun = false,
@@ -58,35 +62,197 @@ define(function (require, exports, module) {
         inspectShown = false;
 
     /**
+     * @const
+     * Amount of time to wait before automatically rejecting the connection
+     * deferred. If we hit this timeout, we'll never have a node connection
+     * for the static server in this run of Brackets.
+     */
+    var NODE_CONNECTION_TIMEOUT = 5000; // 30 seconds
+    
+    /**
+     * @private
+     * @type{jQuery.Deferred.<NodeConnection>}
+     * A deferred which is resolved with a NodeConnection or rejected if
+     * we are unable to connect to Node.
+     */
+    var _nodeConnectionDeferred = $.Deferred();
+    
+    /**
+     * @private
+     * @type {NodeConnection}
+     */
+    var _nodeConnection = new NodeConnection();
+    
+    var _baseUrl = "";
+    
+    
+    function InspectStaticServerProvider() {}
+    
+    InspectStaticServerProvider.prototype.root = null;
+    
+    
+    InspectStaticServerProvider.prototype.canServe = function (localPath) {
+
+        if (!_nodeConnection.connected()) {
+            return false;
+        }
+        
+        if (!ProjectManager.isWithinProject(localPath)) {
+            return false;
+        }
+
+        // Url ending in "/" implies default file, which is usually index.html.
+        // Return true to indicate that we can serve it.
+        if (localPath.match(/\/$/)) {
+            return true;
+        }
+
+        // FUTURE: do a MIME Type lookup on file extension
+        return FileUtils.isStaticHtmlFileExt(localPath);
+    };
+    
+    InspectStaticServerProvider.prototype.getBaseUrl = function () {
+        return _baseUrl;
+    };
+    
+    
+    InspectStaticServerProvider.prototype.readyToServe = function () {
+        console.log('readyToServe');
+        var readyToServeDeferred = $.Deferred(),
+            self = this;
+
+        if (_nodeConnection.connected()) {
+            self.root = ProjectManager.getProjectRoot().fullPath;
+
+            _nodeConnection.domains.inspectHttpServer.getServer(self.root).done(function (address) {
+                console.log(address);
+                _baseUrl = "http://" + address.address + ":" + address.port + "/";
+                readyToServeDeferred.resolve();
+            }).fail(function () {
+                _baseUrl = "";
+                readyToServeDeferred.reject();
+            });
+        } else {
+            // nodeConnection has been connected once (because the deferred
+            // resolved, but is not currently connected).
+            //
+            // If we are in this case, then the node process has crashed
+            // and is in the process of restarting. Once that happens, the
+            // node connection will automatically reconnect and reload the
+            // domain. Unfortunately, we don't have any promise to wait on
+            // to know when that happens. The best we can do is reject this
+            // readyToServe so that the user gets an error message to try
+            // again later.
+            //
+            // The user will get the error immediately in this state, and
+            // the new node process should start up in a matter of seconds
+            // (assuming there isn't a more widespread error). So, asking
+            // them to retry in a second is reasonable.
+            readyToServeDeferred.reject();
+        }
+        
+        return readyToServeDeferred.promise();
+    };
+    
+    InspectStaticServerProvider.prototype.setRequestFilterPaths = function (paths) {
+        var self = this;
+
+        if (_nodeConnection.connected()) {
+            return _nodeConnection.domains.inspectHttpServer.setRequestFilterPaths(self.root, paths);
+        }
+
+        return new $.Deferred().reject().promise();
+    };
+        
+    
+    /**
     * Tell inspect to refresh.
     */
     function dispatchURLChange() {
-        if (!serverRoot) {
-            return;
-        }
-        var urlEvent = $.Event("Inspect:urlchange");
-        urlEvent.inspectURL = INSPECT_URL;
-        EventMap.publish(urlEvent);
+
     }
     
+    /**
+     * @private
+     * Callback for "request" event handlers to override the HTTP ServerResponse.
+     */
+    function _send(location) {
+        return function (resData) {
+            if (_nodeConnection.connected()) {
+                return _nodeConnection.domains.inspectHttpServer.writeFilteredResponse(location.root, location.pathname, resData);
+            }
 
+            return new $.Deferred().reject().promise();
+        };
+    }
+    
+    var _inspectStaticServerProvider = new InspectStaticServerProvider();
+    
+    
+    function _getInspectStaticServerProvider() {
+        return _inspectStaticServerProvider;
+    }
+    
+    
+    function _getNodeConnectionDeferred() {
+        return _nodeConnectionDeferred;
+    }
+    
     /**
     * Start server with specified root.
     * @param root {string} Path to directory from where web server
     * serves content.
     */
     function startServer(root) {
-        console.log('server start goes here');
-//      TODO: implement server
-//        root = root || this.getDefaultServerRoot();
-//        if (root === this.serverRoot) {
-//            return;
-//        }
-//        this.serverRoot = root;
-//        var self = this;
-//        reflowShell.app.startWebServer(this.serverRoot, function (code) {
-//            self.publishRecreatePreview();
-//        });
+        var connectionTimeout = setTimeout(function () {
+            console.error("[InspectHTTPServer] Timed out while trying to connect to node");
+            _nodeConnectionDeferred.reject();
+        }, NODE_CONNECTION_TIMEOUT);
+        
+        _nodeConnection.connect(true).then(function () {
+            _nodeConnection.loadDomains(
+                [ExtensionUtils.getModulePath(module, "node/InspectHTTPDomain")],
+                true
+            ).then(
+                function () {
+                    $(_nodeConnection).on("inspectHttpServer.requestFilter", function (event, request) {
+                        console.log(request);
+                        /* create result object to pass to event handlers */
+                        var requestData = {
+                            headers     : request.headers,
+                            location    : request.location,
+                            send        : _send(request.location)
+                        };
+                    });
+
+                    // if we're spun up correctly lets get down to business
+                    var readyToServeDeferred = $.Deferred(),
+                        self = this;
+
+                    if (_nodeConnection.connected()) {
+                        self.root = ProjectManager.getProjectRoot().fullPath;
+
+                        _nodeConnection.domains.inspectHttpServer.getServer(self.root).done(function (address) {
+                            console.log(address);
+                            _baseUrl = "http://" + address.address + ":" + address.port + "/";
+                            readyToServeDeferred.resolve();
+                        }).fail(function () {
+                            _baseUrl = "";
+                            readyToServeDeferred.reject();
+                        });
+                    } else {
+                        readyToServeDeferred.reject();
+                    }
+                    
+                    clearTimeout(connectionTimeout);
+                    _nodeConnectionDeferred.resolveWith(null, [_nodeConnection]);
+                },
+                function () { // Failed to connect
+                    console.error("[InspectHttpServer] Failed to connect to node", arguments);
+                    _nodeConnectionDeferred.reject();
+                }
+            );
+        });
     }
     
     /**
@@ -107,14 +273,33 @@ define(function (require, exports, module) {
     * Stop web server.
     */
     function stopServer() {
+        // Start up the node connection, which is held in the
+        // _nodeConnectionDeferred module variable. (Use 
+        // _nodeConnectionDeferred.done() to access it.
+
+        
+
+        
         serverRoot = null;
 //        reflowShell.app.stopWebServer(function (code) {});
     }
     
     
+    function _onDocumentChange() {
+        console.log('document changed');
+    }
+    
+    function _onDocumentSaved() {
+        // force a push back down to Inspect. 
+    }
+    
     function listenForDocumentChanges() {
-        var evtId = ".inspectView";
-        EventMap.subscribe("Preview:htmlchange" + evtId, handleHTMLChange);
+        $(DocumentManager).on("currentDocumentChange", _onDocumentChange)
+            .on("documentSaved", _onDocumentSaved);
+        /*
+                $(DocumentManager).on("currentDocumentChange", _onDocumentChange)
+            .on("documentSaved", _onDocumentSaved)
+        */
 //        EventMap.subscribe("Undo:change" + evtId + " UndoManager:commited" + evtId, handleCanvasChanged);
 //        EventMap.subscribe("AssetModel:imageWritten" + evtId, handleImageAdd);
 //        EventMap.subscribe("project:load" + evtId, handleProjectLoad);
@@ -124,8 +309,8 @@ define(function (require, exports, module) {
     * Cleanup event handlers.
     */
     function stopListeningForDocumentChanges() {
-        var evtId = ".inspectView";
-        EventMap.unsubscribe("Preview:htmlchange" + evtId, handleHTMLChange);
+        $(DocumentManager).off("currentDocumentChange", _onDocumentChange)
+            .off("documentSaved", _onDocumentSaved);
 //        EventMap.unsubscribe("Undo:change" + evtId + " UndoManager:commited" + evtId, this.handleCanvasChanged);
 //        EventMap.unsubscribe("AssetModel:imageWritten" + evtId, this.handleImageAdd);
 //        EventMap.unsubscribe("project:load" + evtId, this.handleProjectLoad);
@@ -158,13 +343,13 @@ define(function (require, exports, module) {
     * Need to reposition our popup whenever popup changes size.
     */
     function repositionPopup(event) {
-        console.log('reposition popup event');
 //        if (inspectShown && $target) {
 //            $target.popover("reposition");
 //        }
     }
     
     function onFollowToggle() {
+        console.log('onFollowToggle');
         var oldEnabled = inspectEnabled;
         
         inspectEnabled = SkylabPopup.getFollowState() === "on";
