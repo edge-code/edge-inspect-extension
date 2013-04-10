@@ -31,6 +31,7 @@ define(function (require, exports, module) {
 
     var inspectHtml         = require("text!htmlContent/inspect.html"),
         EdgeInspect         = require('lib/inspect/skylab'),
+        SkyLabController    = EdgeInspect.SkyLabController,
         EventMap            = require("lib/eventmap"),
         SkylabPopup         = require("lib/inspect/skylabpopup"),
         SkylabView          = require("lib/inspect/skylabview"),
@@ -55,6 +56,7 @@ define(function (require, exports, module) {
 
     var $mainContent,
         $inspect,
+        docurl = "",
         firstRun = false,
         inspectEnabled = false,
         inspectViewState = _OFF_CLASS,
@@ -82,87 +84,6 @@ define(function (require, exports, module) {
      * @type {NodeConnection}
      */
     var _nodeConnection = new NodeConnection();
-    
-    var _baseUrl = "";
-    
-    
-    function InspectStaticServerProvider() {}
-    
-    InspectStaticServerProvider.prototype.root = null;
-    
-    
-    InspectStaticServerProvider.prototype.canServe = function (localPath) {
-
-        if (!_nodeConnection.connected()) {
-            return false;
-        }
-        
-        if (!ProjectManager.isWithinProject(localPath)) {
-            return false;
-        }
-
-        // Url ending in "/" implies default file, which is usually index.html.
-        // Return true to indicate that we can serve it.
-        if (localPath.match(/\/$/)) {
-            return true;
-        }
-
-        // FUTURE: do a MIME Type lookup on file extension
-        return FileUtils.isStaticHtmlFileExt(localPath);
-    };
-    
-    InspectStaticServerProvider.prototype.getBaseUrl = function () {
-        return _baseUrl;
-    };
-    
-    
-    InspectStaticServerProvider.prototype.readyToServe = function () {
-        console.log('readyToServe');
-        var readyToServeDeferred = $.Deferred(),
-            self = this;
-
-        if (_nodeConnection.connected()) {
-            self.root = ProjectManager.getProjectRoot().fullPath;
-
-            _nodeConnection.domains.inspectHttpServer.getServer(self.root).done(function (address) {
-                console.log(address);
-                _baseUrl = "http://" + address.address + ":" + address.port + "/";
-                readyToServeDeferred.resolve();
-            }).fail(function () {
-                _baseUrl = "";
-                readyToServeDeferred.reject();
-            });
-        } else {
-            // nodeConnection has been connected once (because the deferred
-            // resolved, but is not currently connected).
-            //
-            // If we are in this case, then the node process has crashed
-            // and is in the process of restarting. Once that happens, the
-            // node connection will automatically reconnect and reload the
-            // domain. Unfortunately, we don't have any promise to wait on
-            // to know when that happens. The best we can do is reject this
-            // readyToServe so that the user gets an error message to try
-            // again later.
-            //
-            // The user will get the error immediately in this state, and
-            // the new node process should start up in a matter of seconds
-            // (assuming there isn't a more widespread error). So, asking
-            // them to retry in a second is reasonable.
-            readyToServeDeferred.reject();
-        }
-        
-        return readyToServeDeferred.promise();
-    };
-    
-    InspectStaticServerProvider.prototype.setRequestFilterPaths = function (paths) {
-        var self = this;
-
-        if (_nodeConnection.connected()) {
-            return _nodeConnection.domains.inspectHttpServer.setRequestFilterPaths(self.root, paths);
-        }
-
-        return new $.Deferred().reject().promise();
-    };
         
     
     /**
@@ -178,14 +99,6 @@ define(function (require, exports, module) {
             return new $.Deferred().reject().promise();
         };
     }
-    
-    var _inspectStaticServerProvider = new InspectStaticServerProvider();
-    
-    
-    function _getInspectStaticServerProvider() {
-        return _inspectStaticServerProvider;
-    }
-    
     
     function _getNodeConnectionDeferred() {
         return _nodeConnectionDeferred;
@@ -226,11 +139,10 @@ define(function (require, exports, module) {
                         self.root = ProjectManager.getProjectRoot().fullPath;
 
                         _nodeConnection.domains.inspectHttpServer.getServer(self.root).done(function (address) {
-                            console.log(address);
-                            _baseUrl = "http://" + address.address + ":" + address.port + "/";
+                            // Once we successfully have a server, trigger a URL change to load the URL of our document.
+                            $inspect.trigger("Inspect:urlchange", docurl);
                             readyToServeDeferred.resolve();
                         }).fail(function () {
-                            _baseUrl = "";
                             readyToServeDeferred.reject();
                         });
                     } else {
@@ -268,15 +180,17 @@ define(function (require, exports, module) {
     function _onDocumentChange() {
         var projectRoot = ProjectManager.getProjectRoot().fullPath;
         var doc = DocumentManager.getCurrentDocument().file.fullPath;
-        var url = doc.substring(projectRoot.length, doc.length);
-        $inspect.trigger("Inspect:urlchange", url);
+        
+        docurl = doc.substring(projectRoot.length, doc.length);
+        $inspect.trigger("Inspect:urlchange", docurl);
     }
     
     function _onDocumentSaved() {
         var projectRoot = ProjectManager.getProjectRoot().fullPath;
         var doc = DocumentManager.getCurrentDocument().file.fullPath;
-        var url = doc.substring(projectRoot.length, doc.length);
-        $inspect.trigger("Inspect:urlchange", url);
+        
+        docurl = doc.substring(projectRoot.length, doc.length);
+        $inspect.trigger("Inspect:urlchange", docurl);
     }
     
     function listenForDocumentChanges() {
@@ -335,7 +249,6 @@ define(function (require, exports, module) {
     }
     
     function onFollowToggle() {
-        console.log('onFollowToggle');
         var oldEnabled = inspectEnabled;
         
         inspectEnabled = SkylabPopup.getFollowState() === "on";
@@ -362,8 +275,18 @@ define(function (require, exports, module) {
     }
     
     function beforeShow() {
+        /* RCS - is there an easier way to do this?
+        * One that would require me not doing it in three places?
+        * Put it in init() and save these values?
+        * TBD
+        */
+        var projectRoot = ProjectManager.getProjectRoot().fullPath;
+        var doc = DocumentManager.getCurrentDocument().file.fullPath;
+        docurl = doc.substring(projectRoot.length, doc.length);
+        
         if (!firstRun) {
             firstRun = true;
+            
             SkylabView.initialize();
             inspectShown = true;
             publishInspectViewState("open");
