@@ -97,7 +97,6 @@ define(function (require, exports, module) {
         
         // load styles
         ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
-        ExtensionUtils.loadStyleSheet(module, "styles/adobe-blank.css");
         
         // register commands
         CommandManager.register(Strings.GENERATE_INSPECT_CONTROLS, COMMAND_HANDLE_INSPECT_CONTROLS, inspect.handleInspectControls);
