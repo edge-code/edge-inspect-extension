@@ -22,16 +22,17 @@
     font-size: 12px;
     margin: 0;
     padding: 0;
-    height: 100%;
     min-height: 100px;
     max-height: 460px;
-    top: 50px;
-    right: 15px;
+    top: 20px;
+    right: 50px;
     position: absolute;
     background-color: #dfe2e2;
     z-index: 5000;
     cursor: default;
     -webkit-font-smoothing: antialiased;
+    border-radius: 5px;
+    box-shadow: 0px 6px 18px rgba(0,0,0,0.3);
     display: none;   
 }
 
