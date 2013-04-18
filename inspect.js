@@ -56,6 +56,7 @@ define(function (require, exports, module) {
 
     var $mainContent,
         $inspect,
+        $inspectPopoverArrow,
         docurl = "",
         firstRun = false,
         inspectEnabled = false,
@@ -270,6 +271,7 @@ define(function (require, exports, module) {
     */
     function handleHiding() {
         $inspect.removeClass("visible");
+        $inspectPopoverArrow.removeClass("visible");
         publishInspectViewState("closed");
         inspectShown = false;
     }
@@ -307,6 +309,7 @@ define(function (require, exports, module) {
             inspectShown = true;
             publishInspectViewState("open");
             $inspect.addClass("visible");
+            $inspectPopoverArrow.addClass("visible");
         }
     }
 
@@ -325,6 +328,7 @@ define(function (require, exports, module) {
         $mainContent = (Mustache.render(inspectHtml, Strings));
         $("body").append($mainContent);
         $inspect = $("#inspect");
+        $inspectPopoverArrow = $(".inspectPopoverArrow");
         $inspect.on("Inspect:redraw", repositionPopup);
         $inspect.on("Inspect:followtoggle", onFollowToggle);
         return d.promise();

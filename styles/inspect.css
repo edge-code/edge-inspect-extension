@@ -8,13 +8,19 @@
 
 .inspectPopoverArrow {
     position: absolute;
-    top: 26px;
-    right: -21px;
+    z-index: 5000;
+    top: 42px;
+    right: 30px;
     width: 30px;
     height: 14px;
     margin: 0;
     -webkit-transform: rotate(90deg);
     background: no-repeat -webkit-image-set(url("../img/popover_arrow.png") 1x, url("../img/popover_arrow@2x.png") 2x);
+    display: none;    
+}
+
+.visible {
+    display: block;   
 }
 
 #inspect {
@@ -32,8 +38,9 @@
     cursor: default;
     -webkit-font-smoothing: antialiased;
     border-radius: 5px;
+    border: 1px solid #aaa;
     box-shadow: 0px 6px 18px rgba(0,0,0,0.3);
-    display: none;   
+    display: none;
 }
 
 #inspect.visible {
