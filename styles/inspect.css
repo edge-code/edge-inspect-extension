@@ -557,12 +557,13 @@ input {
   top: 2px;
   padding-right: 8px;
   content: "";
-  background: url("../img/inspect_icon@2x.png");
+  background: no-repeat -webkit-image-set(url("../img/inspect_icon.png") 1x, url("../img/inspect_icon@2x.png") 2x);
+  background-size: 16px 16px;
   display: inline-block;
   width: 16px;
   height: 16px;
 }
-#toolbar-inspect:hover {
+/*#toolbar-inspect:hover {
   background-position: 0 -16px;
 }
 #toolbar-inspect.active {
@@ -570,4 +571,4 @@ input {
 }
 #toolbar-inspect.active:hover {
   background-position: 0 -48px;
-}
+}*/
