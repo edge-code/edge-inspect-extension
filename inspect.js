@@ -305,9 +305,16 @@ define(function (require, exports, module) {
         if (inspectShown) {
             handleHiding();
         } else {
+            var $toolbarIcon    = $("#toolbar-inspect"),
+                iconOffset      = $toolbarIcon.offset().top,
+                inspectTop      = iconOffset - 20,
+                arrowTop        = inspectTop + 22;
+            
             beforeShow();
             inspectShown = true;
             publishInspectViewState("open");
+            $inspect.css("top", inspectTop);
+            $inspectPopoverArrow.css("top", arrowTop);
             $inspect.addClass("visible");
             $inspectPopoverArrow.addClass("visible");
         }

@@ -9,8 +9,8 @@
 .inspectPopoverArrow {
     position: absolute;
     z-index: 5000;
-    top: 42px;
-    right: 30px;
+    top: 42px; /* dynamically adjusted */
+    right: 15px;
     width: 30px;
     height: 14px;
     margin: 0;
@@ -30,8 +30,8 @@
     padding: 0;
     min-height: 100px;
     max-height: 460px;
-    top: 20px;
-    right: 50px;
+    top: 20px; /* dynamically adjusted */
+    right: 35px;
     position: absolute;
     background-color: #dfe2e2;
     z-index: 5000;
