@@ -309,7 +309,7 @@ input {
     display: inline-block;
     margin-left: 8px;
     position: relative;
-    top: 3px;
+    top: 4px;
 }
 
 #waiting {
@@ -507,7 +507,7 @@ input {
 
 /* Spinner */
 
-.spinner {
+.inspect-spinner {
     width: 16px;
     height: 16px;
     background: no-repeat center center -webkit-image-set(url("../img/inspect_spinner.gif") 1x, url("../img/inspect_spinner@2x.gif") 2x);
