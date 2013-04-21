@@ -270,10 +270,17 @@ define(function (require, exports, module) {
     * Hide popup, reset inspectShown.
     */
     function handleHiding() {
-        $inspect.removeClass("visible");
-        $inspectPopoverArrow.removeClass("visible");
+        $("#inspect, #inspectPopoverArrow").fadeOut(50, function () {
+            $inspect.css("display", "");
+            $inspect.removeClass("visible");
+            $inspectPopoverArrow.css("display", "");
+            $inspectPopoverArrow.removeClass("visible");
+        });
+        
         publishInspectViewState("closed");
         inspectShown = false;
+        
+        $(".content, .sidebar").off(".inspect");
     }
     
     function beforeShow() {
@@ -317,6 +324,8 @@ define(function (require, exports, module) {
             $inspectPopoverArrow.css("top", arrowTop);
             $inspect.addClass("visible");
             $inspectPopoverArrow.addClass("visible");
+            
+            $(".content, .sidebar").on("click.inspect keyup.inspect", handleInspectControls);
         }
     }
 
