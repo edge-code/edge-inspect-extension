@@ -270,7 +270,7 @@ define(function (require, exports, module) {
     * Hide popup, reset inspectShown.
     */
     function handleHiding() {
-        $("#inspect, #inspectPopoverArrow").fadeOut(50, function () {
+        $("#inspect, .inspectPopoverArrow").fadeOut(50, function () {
             $inspect.css("display", "");
             $inspect.removeClass("visible");
             $inspectPopoverArrow.css("display", "");
