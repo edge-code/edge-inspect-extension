@@ -354,7 +354,7 @@ input {
 .breadcrumb-inspect {
     display: inline-block;
     height: 10px;
-    margin: 0 5px;
+    margin: 0 5px 0 8px;
     width: 5px;
 }
 
