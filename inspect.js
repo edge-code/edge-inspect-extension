@@ -177,26 +177,32 @@ define(function (require, exports, module) {
 //        reflowShell.app.stopWebServer(function (code) {});
     }
     
-    
-    function _onDocumentChange() {
-        var projectRoot = ProjectManager.getProjectRoot().fullPath;
-        var doc = DocumentManager.getCurrentDocument().file.fullPath;
+    function _getDocumentURL() {
+        var document    = DocumentManager.getCurrentDocument();
         
-        docurl = doc.substring(projectRoot.length, doc.length);
-        $inspect.trigger("Inspect:urlchange", docurl);
+        if (document && document.file) {
+            var fullPath    = document.file.fullPath,
+                projectPath = ProjectManager.getProjectRoot().fullPath;
+            
+            return fullPath.substring(projectPath.length, fullPath.length);
+        } else {
+            return null;
+        }
     }
     
-    function _onDocumentSaved() {
-        var projectRoot = ProjectManager.getProjectRoot().fullPath;
-        var doc = DocumentManager.getCurrentDocument().file.fullPath;
-        
-        docurl = doc.substring(projectRoot.length, doc.length);
-        $inspect.trigger("Inspect:urlchange", docurl);
+    function _refreshDocument() {
+        var currentDocumentURL = _getDocumentURL();
+
+        if (currentDocumentURL) {
+            docurl = currentDocumentURL;
+            $inspect.trigger("Inspect:urlchange", docurl);
+        }
     }
     
     function listenForDocumentChanges() {
-        $(DocumentManager).on("currentDocumentChange", _onDocumentChange)
-            .on("documentSaved", _onDocumentSaved);
+        $(DocumentManager)
+            .on("currentDocumentChange.edge-code-inspect", _refreshDocument)
+            .on("documentSaved.edge-code-inspect", _refreshDocument);
         /*
                 $(DocumentManager).on("currentDocumentChange", _onDocumentChange)
             .on("documentSaved", _onDocumentSaved)
@@ -210,8 +216,8 @@ define(function (require, exports, module) {
     * Cleanup event handlers.
     */
     function stopListeningForDocumentChanges() {
-        $(DocumentManager).off("currentDocumentChange", _onDocumentChange)
-            .off("documentSaved", _onDocumentSaved);
+        $(DocumentManager).off(".edge-code-inspect");
+
 //        EventMap.unsubscribe("Undo:change" + evtId + " UndoManager:commited" + evtId, this.handleCanvasChanged);
 //        EventMap.unsubscribe("AssetModel:imageWritten" + evtId, this.handleImageAdd);
 //        EventMap.unsubscribe("project:load" + evtId, this.handleProjectLoad);
@@ -284,14 +290,7 @@ define(function (require, exports, module) {
     }
     
     function beforeShow() {
-        /* RCS - is there an easier way to do this?
-        * One that would require me not doing it in three places?
-        * Put it in init() and save these values?
-        * TBD
-        */
-        var projectRoot = ProjectManager.getProjectRoot().fullPath;
-        var doc = DocumentManager.getCurrentDocument().file.fullPath;
-        docurl = doc.substring(projectRoot.length, doc.length);
+        docurl = _getDocumentURL();
         
         if (!firstRun) {
             firstRun = true;
