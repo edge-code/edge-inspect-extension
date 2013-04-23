@@ -1,0 +1,7 @@
+{
+    "name": "edge-code-inspect",
+    "description": "Edge Inspect extension for Edge Code",
+    "version": "0.1.0",
+    "keywords": [".html", ".css"],
+    "homepage": "http://html.adobe.com/edge/inspect/"
+}
