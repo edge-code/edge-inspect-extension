@@ -227,7 +227,7 @@ define(function (require, exports, module) {
     }
     
     function showControls() {
-        var $toolbarIcon    = $("#toolbar-inspect"),
+        var $toolbarIcon    = $("#inspect-toolbar"),
             iconOffset      = $toolbarIcon.offset().top,
             inspectTop      = iconOffset - 20,
             arrowTop        = inspectTop + 22;

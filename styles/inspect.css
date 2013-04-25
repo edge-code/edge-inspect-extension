@@ -1,5 +1,8 @@
-#topbar, #removetopbar, #connecteddevices, #removedevices, 
-#devicelistfooter {
+.inspect-content #topbar, 
+.inspect-content #removetopbar, 
+.inspect-content #connecteddevices, 
+.inspect-content #removedevices, 
+.inspect-content #devicelistfooter {
     user-drag: none;
     -webkit-user-drag: none;
     user-select: none;
@@ -19,7 +22,9 @@
     display: none;    
 }
 
-.visible {
+.inspectPopoverArrow.visible,
+#inspect.visible
+{
     display: block;   
 }
 
@@ -42,25 +47,29 @@
     box-shadow: 0px 6px 18px rgba(0,0,0,0.3);
     display: none;
 }
+/*
 
 #inspect.visible {
     display: block;
 }
+*/
 
-#mainpanel, #removepanel {
+.inspect-content #mainpanel, 
+.inspect-content #removepanel {
     width: 300px;
     margin: 0;
     min-width: 300px;
     padding: 0;
 }
 
-#topbar, #removetopbar {
+.inspect-content #topbar, 
+.inspect-content #removetopbar {
     position: relative;
     height: 54px;
     line-height: 56px;
 }
 
-#removetopbar {
+.inspect-content #removetopbar {
     font-size: 18px;
     padding: 1px 15px 0px 15px;
     white-space: nowrap;
@@ -69,35 +78,37 @@
     width: 100%; /* need this for text overflow */
 }
 
-#topbarleft {
+.inspect-content #topbarleft {
     position: absolute;
     top: 15px;
     left: 15px;
 }
 
-#topbarright {
+.inspect-content #topbarright {
     position: absolute;
     right: 15px;
     top: 18px;
 }
 
-#removetopbarright, .pairingrightdiv {
+.inspect-content #removetopbarright, 
+.inspect-content .pairingrightdiv {
     float: right;
 }
 
-.passcode, .pairingrightdiv {
+.inspect-content .passcode,
+.inspect-content .pairingrightdiv {
    height: 30px;
 }
 
-.pairingrightdiv {
+.inspect-content .pairingrightdiv {
     width: 242px;
 }
 
-.topbarsubtitle {
+.inspect-content .topbarsubtitle {
     text-shadow: 0 1px 0 #fff;
 }
 
-#logo {
+.inspect-content #logo {
     display: block;
     padding: 0 0 0 35px;
     color: #454545;
@@ -107,7 +118,7 @@
     background: no-repeat -webkit-image-set(url("../img/reflow_in_panel_icon.png") 1x, url("../img/reflow_in_panel_icon@2x.png") 2x);
 }
 
-#down {
+.inspect-content #down {
     display: inline-block;
     vertical-align: middle;
     height: 15px;
@@ -115,17 +126,21 @@
     background: no-repeat -webkit-image-set(url("../img/unit_drop_light.png") 1x, url("../img/unit_drop_light@2x.png") 2x);
 }
 
-#inspectToggle {
+.inspect-content #inspectToggle {
     display: block;
     height: 23px;
     width: 56px;
 }
 
-#devicelist, .clearrow, .clearboth, #removelist {
+.inspect-content #devicelist,
+.inspect-content .clearrow,
+.inspect-content .clearboth,
+.inspect-content #removelist {
     clear: both;
 }
 
-#devicelist, #removelist {
+.inspect-content #devicelist,
+.inspect-content #removelist {
     max-height: 300px;
     width: 270px;
     margin: 0 auto 4px auto;
@@ -136,27 +151,27 @@
     font-size: 12px;
 }
 
-#removelist {
+.inspect-content #removelist {
     padding: 0;
 }
 
-.hl {
+.inspect-content .hl {
     line-height: 30px;
 }
 
-.hl:hover .deviceeject {
+.inspect-content .hl:hover .deviceeject {
     visibility: visible;
 }
 
-.hl:hover .devicerefresh {
+.inspect-content .hl:hover .devicerefresh {
     visibility: visible;
 }
 
-span#connecteddevices {
+.inspect-content span#connecteddevices {
     display: block;
 }
 
-.devicename {
+.inspect-content .devicename {
     display: block;
     float: left;
     height: 30px;
@@ -168,25 +183,25 @@ span#connecteddevices {
     width: 226px;
 }
 
-.devicebuttons {
+.inspect-content .devicebuttons {
     float: right;
     height: 30px;
     margin: 0 5px 0 0;
 }
 
-.deviceeject {
+.inspect-content .deviceeject {
     visibility:hidden;
 }
 
-.devicerefresh {
+.inspect-content .devicerefresh {
     visibility:hidden;
 }
 
-#machineinfoheader {
+.inspect-content #machineinfoheader {
     clear:both;
 }
 
-#devicelistfooter {
+.inspect-content #devicelistfooter {
     height: 44px;
     padding: 0 15px;
     clear: both;
@@ -195,7 +210,7 @@ span#connecteddevices {
     -webkit-user-select: none;   
 }
 
-#submenuoverlay {
+.inspect-content #submenuoverlay {
     background: #fff;
     border: 1px solid rgba(0,0,0,0.4);
     border-radius: 3px;
@@ -210,7 +225,7 @@ span#connecteddevices {
     cursor: default;
 }
 
-.submenutext {
+.inspect-content .submenutext {
     color: #000;
     display: block;
     font-size: 13px;
@@ -221,23 +236,24 @@ span#connecteddevices {
     cursor: default;
 }
 
-.submenutext:hover {
+.inspect-content .submenutext:hover {
     background: #e0f0fa;
     color: #000;
 }
 
-.submenutext:active {
+.inspect-content .submenutext:active {
     background: #bee0f5;
 }
 
-.removehead {
+.inspect-content .removehead {
     font: 14px;
     font-weight: bold;
     color: #7f7f7f;
     clear:both;
 }
 
-#removetext, #machineinfotext {
+.inspect-content #removetext,
+.inspect-content #machineinfotext {
     color: #666;
     font-size: 11px;
     line-height: 15px;
@@ -246,18 +262,18 @@ span#connecteddevices {
     text-shadow: 0 1px 0 #fff;
 }
 
-#machineinfotext {
+.inspect-content #machineinfotext {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     word-spacing: 3px;   
 }
-.message:hover {
+
+.inspect-content .message:hover {
     background: none !important;
 }
 
-
-.removesubtext {
+.inspect-content .removesubtext {
     color: #777;
     display: block;
     font-size: 11px;
@@ -265,20 +281,21 @@ span#connecteddevices {
     line-height: 4px;
 }
 
-.floatleft {
+.inspect-content .floatleft {
     float:left;
 }
 
-div.passcode {
+.inspect-content div.passcode {
     padding: 0 0 0 7px;
 }
 
-span.passcodefield {
+.inspect-content span.passcodefield {
     float: left;
     margin: 0px 7px 0 0;
 }
 
-input.passcodefield, input.passcodefielderror  {
+.inspect-content input.passcodefield, 
+.inspect-content input.passcodefielderror  {
     padding-left: 5px;
     width: 60px;
     height: 12px;
@@ -290,20 +307,20 @@ input.passcodefield, input.passcodefielderror  {
     font-family: "SourceSansPro", Helvetica, Arial, "Meiryo UI", "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
 }
 
-input.passcodefielderror {
+.inspect-content input.passcodefielderror {
     border: 1px solid #bc0023;
 }
 
-input.passcodefielderror:focus {
+.inspect-content input.passcodefielderror:focus {
     border: 1px solid #bc0023;
     box-shadow: 0 0 0 2px #ef71ad;
 }
 
-input {
+.inspect-content input {
     outline: none;
 }
 
-#waitingspinner {
+.inspect-content #waitingspinner {
     height: 16px;
     width: 16px;
     display: inline-block;
@@ -312,25 +329,25 @@ input {
     top: 4px;
 }
 
-#waiting {
+.inspect-content #waiting {
     line-height: 30px;
     margin: 0px 15px 0px 8px;
     text-indent: 0px;
 }
 
-#dmerror, #dmexpired {
+.inspect-content #dmerror, #dmexpired {
     text-align: center;
     margin: 15px auto;
 }
 
-#syncbrowseoff {
+.inspect-content #syncbrowseoff {
     min-height: 30px;
     line-height: 30px;
     padding: 0 8px;
     background: #C7C9C9;
 }
 
-.pairingdevicename {
+.inspect-content .pairingdevicename {
     float: left;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -342,7 +359,7 @@ input {
     width: 142px;
 }
 
-#removeback {
+.inspect-content #removeback {
     display: inline-block;
     width: 28px;
     height: 0;
@@ -351,69 +368,88 @@ input {
     vertical-align: middle;
 }
 
-.breadcrumb-inspect {
+.inspect-content .inspect-breadcrumb {
     display: inline-block;
     height: 10px;
     margin: 0 5px 0 8px;
     width: 5px;
 }
 
-.removepagination {
+.inspect-content .removepagination {
     font-size:12px;
     color: #fff;
     padding: 8px 0 0 15px;
 }
 
-#progressdiv {
+.inspect-content #progressdiv {
     height: 16px;
     margin-top: 12px;
     width: 16px;
     float:left;
 }
 
-.md-btn {
+.inspect-content .md-btn {
     display: inline-block;
     height: 18px;
     width: 18px;
     margin: 6px 0 0 -3px;
 }
 
-.lg-btn {
+.inspect-content .lg-btn {
     float: right;
     margin: 11px 0 0 11px;
 }
 
-[disabled=disabled] {
+.inspect-content [disabled=disabled] {
     cursor: default;
     opacity: 0.4;
     pointer-events: none;
 }
 
-#bottom [disabled=disabled] {
+.inspect-content #bottom [disabled=disabled] {
     opacity: 0.2;
 }
 
-#forcerefresh {
+.inspect-content #forcerefresh {
     width: 19px;
     height: 18px;
     background: no-repeat -webkit-image-set(url("../img/inspect_refresh.png") 1x, url("../img/inspect_refresh@2x.png") 2x);
 }
 
-#togglechrome {
+.inspect-content #togglechrome {
     width: 20px;
     height: 18px;
     background: no-repeat -webkit-image-set(url("../img/inspect_togglechrome.png") 1x, url("../img/inspect_togglechrome@2x.png") 2x);
 }
 
-#togglechrome.fulloff {
+.inspect-content #togglechrome.fulloff {
     background-image: -webkit-image-set(url("../img/inspect_exitfullscreen.png") 1x, url("../img/inspect_exitfullscreen@2x.png") 2x);
 }
 
-#cancelscreenshotdiv, #completedscreenshotdiv, #removepanel, #waitingdiv, #syncbrowseoff, #dmerror, #dmexpired, #progressdiv, #shadmessage, #periodicsurveywrapper, #subscriptionexpiredwrapper, #screenshotsarepremiumwrapper, #seconddeviceispremiumwrapper, #welcomeDiv, #templates, #subscriptionexpiredwrappers, #screenshotsarepremiumwrappers, #seconddeviceispremiumwrappers, #buyitnowwrapper {
+.inspect-content #cancelscreenshotdiv, 
+.inspect-content #completedscreenshotdiv, 
+.inspect-content #removepanel, 
+.inspect-content #waitingdiv, 
+.inspect-content #syncbrowseoff, 
+.inspect-content #dmerror, 
+.inspect-content #dmexpired, 
+.inspect-content #progressdiv, 
+.inspect-content #shadmessage, 
+.inspect-content #periodicsurveywrapper, 
+.inspect-content #subscriptionexpiredwrapper, 
+.inspect-content #screenshotsarepremiumwrapper, 
+.inspect-content #seconddeviceispremiumwrapper, 
+.inspect-content #welcomeDiv, 
+.inspect-content #templates, 
+.inspect-content #subscriptionexpiredwrappers, 
+.inspect-content #screenshotsarepremiumwrappers, 
+.inspect-content #seconddeviceispremiumwrappers, 
+.inspect-content #buyitnowwrapper {
     display: none;
 }
 
-#cancelscreenshot, #completedscreenshot {
+.inspect-content #cancelscreenshot, 
+.inspect-content #completedscreenshot {
     color: #0083e8;
     font-size: 11px;
     float: left;
@@ -423,11 +459,12 @@ input {
     cursor: pointer;
 }
 
-#completedscreenshot {
+.inspect-content #completedscreenshot {
     margin-left: 0 !important;
 }
 
-#cancelscreenshot:active, , #completedscreenshot:active {
+.inspect-content #cancelscreenshot:active, 
+.inspect-content #completedscreenshot:active {
     color: #ccc;
 }
 
@@ -441,27 +478,30 @@ input {
     position: relative;
 }*/
 
-#shadmessage a, #dmerror a {
+.inspect-content #shadmessage a, 
+.inspect-content #dmerror a {
   color: #0083e8;
   text-decoration: none;
 }
 
-#shadmessage a:hover, #dmerror a:hover {
+.inspect-content #shadmessage a:hover, 
+.inspect-content #dmerror a:hover {
     text-decoration: underline;
 }
 
-#shadmessage a:focus, #dmerror a:focus {
+.inspect-content #shadmessage a:focus, 
+.inspect-content #dmerror a:focus {
   outline: none;
 }
 
-#getedgeinspectlink {
+.inspect-content #getedgeinspectlink {
 }
 
-#periodicsurveywrapper,
-#subscriptionexpiredwrapper,
-#screenshotsarepremiumwrapper,
-#seconddeviceispremiumwrapper,
-#buyitnowwrapper {
+.inspect-content #periodicsurveywrapper,
+.inspect-content #subscriptionexpiredwrapper,
+.inspect-content #screenshotsarepremiumwrapper,
+.inspect-content #seconddeviceispremiumwrapper,
+.inspect-content #buyitnowwrapper {
    	font-size: 11px;
     line-height: 15px;
     margin: 3px 0 15px 0;
@@ -472,34 +512,39 @@ input {
     padding: 15px;
 }
 
-#shadmessage-remove, #periodicsurveywrapper-remove, #subscriptionexpiredwrapper-remove, #screenshotsarepremiumwrapper-remove, #seconddeviceispremiumwrapper-remove,  #buyitnowwrapper-remove{
+.inspect-content #shadmessage-remove, 
+.inspect-content #periodicsurveywrapper-remove, 
+.inspect-content #subscriptionexpiredwrapper-remove, 
+.inspect-content #screenshotsarepremiumwrapper-remove, 
+.inspect-content #seconddeviceispremiumwrapper-remove,
+.inspect-content #buyitnowwrapper-remove{
   position: absolute;
   top: 5px;
   right: 14px;
 }
 
-#buyitnowwrapper .md-btn {
+.inspect-content #buyitnowwrapper .md-btn {
     margin: 17px 0 0 -3px;
 }
 
-#welcomeDiv {
+.inspect-content #welcomeDiv {
     background: #5b5e5f;
     border-top: 1px solid rgba(255,255,255,0.1);
     padding: 20px 15px;
 }
 
-#welcomeaction {
+.inspect-content #welcomeaction {
     color: #0083e8;
     cursor: pointer;
     margin: 8px 0 40px;
 }
 
-#welcomeaction:active {
+.inspect-content #welcomeaction:active {
     color: #0083e8;
     text-decoration: underline;
 }
 
-#welcomemessage {
+.inspect-content #welcomemessage {
     color: #fff;
     font-size: 12px;
     line-height: 16px;
@@ -507,43 +552,43 @@ input {
 
 /* Spinner */
 
-.inspect-spinner {
+.inspect-content .inspect-spinner {
     width: 16px;
     height: 16px;
     background: no-repeat center center -webkit-image-set(url("../img/inspect_spinner.gif") 1x, url("../img/inspect_spinner@2x.gif") 2x);
     background-size: 100%;
 }
 
-.devicecancel, .deviceremove {
+.inspect-content .devicecancel, .deviceremove {
     background: center center no-repeat -webkit-image-set(url("../img/inspect_remove.png") 1x, url("../img/inspect_remove@2x.png") 2x);
 }
 
-.devicecheck {
+.inspect-content .devicecheck {
     background: center center no-repeat -webkit-image-set(url("../img/inspect_confirm.png") 1x, url("../img/inspect_confirm@2x.png") 2x);
 }
 
-.deviceeject,
-#removeconnected .deviceremove {
+.inspect-content .deviceeject,
+.inspect-content #removeconnected .deviceremove {
     background: center center no-repeat -webkit-image-set(url("../img/inspect_eject.png") 1x, url("../img/inspect_eject@2x.png") 2x); 
 }
 
 
 /* Images and such ------------------------------------------------------------------------------- */
 
-.toggleon {
+.inspect-content .toggleon {
     background: no-repeat -webkit-image-set(url("../img/slideswitch_on.png") 1x, url("../img/slideswitch_on@2x.png") 2x);
 }
 
-.toggleoff {
+.inspect-content .toggleoff {
     background: no-repeat -webkit-image-set(url("../img/slideswitch_off.png") 1x, url("../img/slideswitch_off@2x.png") 2x);
 }
 
-#progressdiv {
+.inspect-content #progressdiv {
     background: no-repeat -webkit-image-set(url("../img/inspect_spinner.gif") 1x, url("../img/inspect_spinner@2x.gif") 2x);
     background-size: 100%;
 }
 
-.breadcrumb-inspect {
+.inspect-content .inspect-breadcrumb {
     background: no-repeat -webkit-image-set(url("../img/breadcrumb.png") 1x, url("../img/breadcrumb@2x.png") 2x);
 }
 
@@ -552,7 +597,7 @@ input {
 /**
  *  Brackets Toolbar Icon Styling
  */
-#toolbar-inspect {
+#inspect-toolbar {
   position: relative;
   top: 2px;
   padding-right: 8px;
