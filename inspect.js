@@ -171,7 +171,9 @@ define(function (require, exports, module) {
         });
     }
         
-    function onFollowToggle(event, data) {
+    function onFollowToggle() {
+        var $toolbarIcon = $("#inspect-toolbar");
+        
         if (SkyLabPopup.getFollowState() === "on") {
             if (!inspectEnabled) {
                 inspectEnabled = true;
@@ -196,6 +198,8 @@ define(function (require, exports, module) {
                 
                 _updateCurrentURL();
                 startServer(projectRoot);
+                
+                $toolbarIcon.addClass("active");
             } else {
                 console.log("Toggle state switched on but Inspect is enabled");
             }
@@ -208,6 +212,7 @@ define(function (require, exports, module) {
                 $(DocumentManager).off(".edge-code-inspect");
                 $(ProjectManager).off(".edge-code-inspect");
                 
+                $toolbarIcon.removeClass("active");
             } else {
                 console.log("Toggle state switched off but Inspect is disabled");
             }

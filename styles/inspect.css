@@ -608,12 +608,16 @@
   width: 16px;
   height: 16px;
 }
-/*#toolbar-inspect:hover {
-  background-position: 0 -16px;
+
+#inspect-toolbar:hover {
+  -webkit-filter: brightness(5%);
 }
-#toolbar-inspect.active {
-  background-position: 0 -32px;
+
+#inspect-toolbar.active {
+  -webkit-filter: brightness(10%);
 }
-#toolbar-inspect.active:hover {
-  background-position: 0 -48px;
-}*/
+
+#inspect-toolbar.active:hover {
+  -webkit-filter: brightness(15%);
+}
+
