@@ -33,37 +33,68 @@ define(function (require, exports, module) {
         EdgeInspect         = require('lib/inspect/skylab'),
         SkyLabController    = EdgeInspect.SkyLabController,
         EventMap            = require("lib/eventmap"),
-        SkylabPopup         = require("lib/inspect/skylabpopup"),
-        SkylabView          = require("lib/inspect/skylabview"),
+        SkyLabPopup         = require("lib/inspect/skylabpopup"),
+        SkyLabView          = require("lib/inspect/skylabview"),
         Strings             = require("strings");
     
     // Brackets modules
     var CommandManager      = brackets.getModule("command/CommandManager"),
         DocumentManager     = brackets.getModule("document/DocumentManager"),
         EditorManager       = brackets.getModule("editor/EditorManager"),
+        LanguageManager     = brackets.getModule("language/LanguageManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         FileUtils           = brackets.getModule("file/FileUtils"),
         KeyEvent            = brackets.getModule("utils/KeyEvent"),
         Menus               = brackets.getModule("command/Menus"),
         NodeConnection      = brackets.getModule("utils/NodeConnection"),
         PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
-        ProjectManager       = brackets.getModule("project/ProjectManager");
+        ProjectManager      = brackets.getModule("project/ProjectManager");
     
-    var INSPECT_URL = "http://127.0.0.1:8007/",
-        _ON_CLASS = "followOn",
-        _OFF_CLASS = "followOff",
-        _skyLabInited = false;
+    var _ON_CLASS = "followOn",
+        _OFF_CLASS = "followOff";
 
     var $mainContent,
         $inspect,
         $inspectPopoverArrow,
-        docurl = "",
-        firstRun = false,
-        inspectEnabled = false,
         inspectViewState = _OFF_CLASS,
-        serverRoot = null,
+        inspectEnabled = false,
         inspectShown = false;
+    
+    var projectRoot,
+        serverAddress,
+        currentURL = null,
+        nodeConnection;
 
+    function _refreshCurrentURL() {
+        if (currentURL) {
+            console.log("Refreshing URL: " + currentURL);
+            SkyLabController.followUrl(currentURL, "false");
+        }
+    }
+    
+    function _updateCurrentURL() {
+        var document = DocumentManager.getCurrentDocument();
+        
+        if (document && document.file) {
+            var fullPath    = document.file.fullPath,
+                language    = LanguageManager.getLanguageForPath(fullPath),
+                rootIndex   = fullPath.indexOf(projectRoot),
+                relativePath;
+            
+            if (rootIndex === 0) {
+                if (language.getId() === "html") {
+                    relativePath = fullPath.substring(projectRoot.length - 1, fullPath.length);
+                    currentURL = "http://" + serverAddress.address + ":" + serverAddress.port + relativePath;
+                    
+                    console.log("Setting URL: " + currentURL);
+                    _refreshCurrentURL();
+                }
+            } else {
+                console.log("Document root does not match project root");
+            }
+        }
+    }
+    
     /**
      * @const
      * Amount of time to wait before automatically rejecting the connection
@@ -85,24 +116,14 @@ define(function (require, exports, module) {
      * @type {NodeConnection}
      */
     var _nodeConnection = new NodeConnection();
-        
     
-    /**
-     * @private
-     * Callback for "request" event handlers to override the HTTP ServerResponse.
-     */
-    function _send(location) {
-        return function (resData) {
-            if (_nodeConnection.connected()) {
-                return _nodeConnection.domains.inspectHttpServer.writeFilteredResponse(location.root, location.pathname, resData);
-            }
-
-            return new $.Deferred().reject().promise();
-        };
-    }
-    
-    function _getNodeConnectionDeferred() {
-        return _nodeConnectionDeferred;
+   /**
+    * Stop web server.
+    */
+    function stopServer(root) {
+        if (_nodeConnection.connected()) {
+            _nodeConnection.domains.inspectHttpServer.closeServer(root);
+        }
     }
     
     /**
@@ -122,26 +143,15 @@ define(function (require, exports, module) {
                 true
             ).then(
                 function () {
-                    $(_nodeConnection).on("inspectHttpServer.requestFilter", function (event, request) {
-                        console.log(request);
-                        /* create result object to pass to event handlers */
-                        var requestData = {
-                            headers     : request.headers,
-                            location    : request.location,
-                            send        : _send(request.location)
-                        };
-                    });
-
                     // if we're spun up correctly lets get down to business
-                    var readyToServeDeferred = $.Deferred(),
-                        self = this;
+                    var readyToServeDeferred = $.Deferred();
 
                     if (_nodeConnection.connected()) {
-                        self.root = ProjectManager.getProjectRoot().fullPath;
-
-                        _nodeConnection.domains.inspectHttpServer.getServer(self.root).done(function (address) {
+                        _nodeConnection.domains.inspectHttpServer.getServer(root).done(function (newAddress) {
                             // Once we successfully have a server, trigger a URL change to load the URL of our document.
-                            $inspect.trigger("Inspect:urlchange", docurl);
+                            serverAddress = newAddress;
+                            
+                            _refreshCurrentURL();
                             readyToServeDeferred.resolve();
                         }).fail(function () {
                             readyToServeDeferred.reject();
@@ -160,122 +170,51 @@ define(function (require, exports, module) {
             );
         });
     }
-    
-
-    /**
-    * Stop web server.
-    */
-    function stopServer() {
-        // Start up the node connection, which is held in the
-        // _nodeConnectionDeferred module variable. (Use 
-        // _nodeConnectionDeferred.done() to access it.
-
         
-
-        
-        serverRoot = null;
-//        reflowShell.app.stopWebServer(function (code) {});
-    }
-    
-    function _getDocumentURL() {
-        var document    = DocumentManager.getCurrentDocument();
-        
-        if (document && document.file) {
-            var fullPath    = document.file.fullPath,
-                projectPath = ProjectManager.getProjectRoot().fullPath;
-            
-            return fullPath.substring(projectPath.length, fullPath.length);
+    function onFollowToggle(event, data) {
+        if (SkyLabPopup.getFollowState() === "on") {
+            if (!inspectEnabled) {
+                inspectEnabled = true;
+                projectRoot = ProjectManager.getProjectRoot().fullPath;
+                
+                $(ProjectManager)
+                    .on("beforeProjectClose.edge-code-inspect beforeAppClose.edge-code-inspect", function () {
+                        if (inspectEnabled) {
+                            stopServer(projectRoot);
+                        }
+                    })
+                    .on("projectOpen.edge-code-inspect", function (event, newProjectRoot) {
+                        projectRoot = newProjectRoot.fullPath;
+                        if (inspectEnabled) {
+                            startServer(projectRoot);
+                        }
+                    });
+                
+                $(DocumentManager)
+                    .on("currentDocumentChange.edge-code-inspect", _updateCurrentURL)
+                    .on("documentSaved.edge-code-inspect", _refreshCurrentURL);
+                
+                _updateCurrentURL();
+                startServer(projectRoot);
+            } else {
+                console.log("Toggle state switched on but Inspect is enabled");
+            }
         } else {
-            return null;
+            if (inspectEnabled) {
+                inspectEnabled = false;
+                
+                stopServer(projectRoot);
+                
+                $(DocumentManager).off(".edge-code-inspect");
+                $(ProjectManager).off(".edge-code-inspect");
+                
+            } else {
+                console.log("Toggle state switched off but Inspect is disabled");
+            }
         }
     }
     
-    function _refreshDocument() {
-        var currentDocumentURL = _getDocumentURL();
-
-        if (currentDocumentURL) {
-            docurl = currentDocumentURL;
-            $inspect.trigger("Inspect:urlchange", docurl);
-        }
-    }
-    
-    function listenForDocumentChanges() {
-        $(DocumentManager)
-            .on("currentDocumentChange.edge-code-inspect", _refreshDocument)
-            .on("documentSaved.edge-code-inspect", _refreshDocument);
-        /*
-                $(DocumentManager).on("currentDocumentChange", _onDocumentChange)
-            .on("documentSaved", _onDocumentSaved)
-        */
-//        EventMap.subscribe("Undo:change" + evtId + " UndoManager:commited" + evtId, handleCanvasChanged);
-//        EventMap.subscribe("AssetModel:imageWritten" + evtId, handleImageAdd);
-//        EventMap.subscribe("project:load" + evtId, handleProjectLoad);
-    }
-    
-    /**
-    * Cleanup event handlers.
-    */
-    function stopListeningForDocumentChanges() {
-        $(DocumentManager).off(".edge-code-inspect");
-
-//        EventMap.unsubscribe("Undo:change" + evtId + " UndoManager:commited" + evtId, this.handleCanvasChanged);
-//        EventMap.unsubscribe("AssetModel:imageWritten" + evtId, this.handleImageAdd);
-//        EventMap.unsubscribe("project:load" + evtId, this.handleProjectLoad);
-    }
-    
-
-    /**
-    * Tell status bar that our state changed.
-    * @param state {string} Can be _ON_CLASS or _OFF_CLASS.
-    */
-    function publishInspectViewState(state) {
-        if (inspectViewState === _ON_CLASS && state !== _OFF_CLASS) {
-            return;
-        }
-        inspectViewState = state;
-    }
-    
-    /**
-    * Notify world if we are on or off.
-    */
-    function publishInspectOnOff() {
-        if (inspectEnabled) {
-            publishInspectViewState(_ON_CLASS);
-        } else {
-            publishInspectViewState(_OFF_CLASS);
-        }
-    }
-    
-    /**
-    * Need to reposition our popup whenever popup changes size.
-    */
-    function repositionPopup(event) {
-//        if (inspectShown && $target) {
-//            $target.popover("reposition");
-//        }
-    }
-    
-    function onFollowToggle() {
-        var oldEnabled = inspectEnabled;
-        
-        inspectEnabled = SkylabPopup.getFollowState() === "on";
-        if (!oldEnabled && inspectEnabled) {
-            listenForDocumentChanges();
-            startServer();
-        }
-        if (oldEnabled && !inspectEnabled) {
-            stopListeningForDocumentChanges();
-            stopServer();
-        }
-        publishInspectOnOff();
-        repositionPopup();
-    }
-
-
-    /**
-    * Hide popup, reset inspectShown.
-    */
-    function handleHiding() {
+    function hideControls() {
         $("#inspect, .inspectPopoverArrow").fadeOut(50, function () {
             $inspect.css("display", "");
             $inspect.removeClass("visible");
@@ -283,70 +222,47 @@ define(function (require, exports, module) {
             $inspectPopoverArrow.removeClass("visible");
         });
         
-        publishInspectViewState("closed");
-        inspectShown = false;
-        
         $(".content, .sidebar").off(".inspect");
+        inspectShown = false;
     }
     
-    function beforeShow() {
-        docurl = _getDocumentURL();
+    function showControls() {
+        var $toolbarIcon    = $("#toolbar-inspect"),
+            iconOffset      = $toolbarIcon.offset().top,
+            inspectTop      = iconOffset - 20,
+            arrowTop        = inspectTop + 22;
         
-        if (!firstRun) {
-            firstRun = true;
-            
-            SkylabView.initialize();
-            inspectShown = true;
-            publishInspectViewState("open");
-            $inspect.on("hiding", handleHiding);
-            SkylabPopup.initInspect($inspect);
-        }
-        if (!_skyLabInited) {
-            _skyLabInited = true;
-            SkylabPopup.startListening();
-        }
+        $inspect.css("top", inspectTop);
+        $inspectPopoverArrow.css("top", arrowTop);
+        $inspect.addClass("visible");
+        $inspectPopoverArrow.addClass("visible");
+        
+        $(".content, .sidebar").on("click.inspect keyup.inspect", hideControls);
+        inspectShown = true;
     }
     
     function handleInspectControls() {
         if (inspectShown) {
-            handleHiding();
+            hideControls();
         } else {
-            var $toolbarIcon    = $("#toolbar-inspect"),
-                iconOffset      = $toolbarIcon.offset().top,
-                inspectTop      = iconOffset - 20,
-                arrowTop        = inspectTop + 22;
-            
-            beforeShow();
-            inspectShown = true;
-            publishInspectViewState("open");
-            $inspect.css("top", inspectTop);
-            $inspectPopoverArrow.css("top", arrowTop);
-            $inspect.addClass("visible");
-            $inspectPopoverArrow.addClass("visible");
-            
-            $(".content, .sidebar").on("click.inspect keyup.inspect", handleInspectControls);
+            showControls();
         }
-    }
-
-    /**
-    * Notify HTMLPreview to recreate temp dir
-    * but never open Chrome or put sniffing code in.
-    */
-    function publishRecreatePreview() {
-        EventMap.publish("Preview:createSilent");
     }
     
     function init() {
-        var d = $.Deferred();
-        var evtId = ".inspectView";
-        d.resolve();
-        $mainContent = (Mustache.render(inspectHtml, Strings));
+        var $mainContent = Mustache.render(inspectHtml, Strings);
+        
         $("body").append($mainContent);
         $inspect = $("#inspect");
         $inspectPopoverArrow = $(".inspectPopoverArrow");
-        $inspect.on("Inspect:redraw", repositionPopup);
         $inspect.on("Inspect:followtoggle", onFollowToggle);
-        return d.promise();
+
+        SkyLabView.initialize();
+        SkyLabPopup.initInspect($inspect);
+        SkyLabPopup.startListening();
+
+        nodeConnection = new NodeConnection();
+        return nodeConnection.connect();
     }
     
     exports.init = init;

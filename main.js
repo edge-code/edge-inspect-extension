@@ -62,10 +62,6 @@ define(function (require, exports, module) {
         return doc && doc.getLanguage().getName() === "HTML";
     }
     
-    function _showHowtoDialog() {
-        Dialogs.showModalDialog("edge-web-fonts-howto-dialog");
-    }
-    
     function _handleGenerateInspectControls() {
         
     }
