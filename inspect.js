@@ -63,7 +63,8 @@ define(function (require, exports, module) {
     var projectRoot,
         serverAddress,
         currentURL = null,
-        nodeConnection;
+        nodeConnection,
+        inspectPromise;
 
     function _refreshCurrentURL() {
         if (currentURL) {
@@ -84,82 +85,70 @@ define(function (require, exports, module) {
             if (rootIndex === 0) {
                 if (language.getId() === "html") {
                     relativePath = fullPath.substring(projectRoot.length - 1, fullPath.length);
+                    relativePath = encodeURIComponent(relativePath);
+                    relativePath = relativePath.replace(/%2F/g, "/");
                     currentURL = "http://" + serverAddress.address + ":" + serverAddress.port + relativePath;
                     
-                    console.log("Setting URL: " + currentURL);
-                    _refreshCurrentURL();
+                    console.log("New URL: " + currentURL);
+                    return true;
                 }
             } else {
                 console.log("Document root does not match project root");
             }
         }
+        return false;
     }
-    
-    /**
-     * @const
-     * Amount of time to wait before automatically rejecting the connection
-     * deferred. If we hit this timeout, we'll never have a node connection
-     * for the static server in this run of Brackets.
-     */
-    var NODE_CONNECTION_TIMEOUT = 5000; // 30 seconds
-    
-    /**
-     * @private
-     * @type{jQuery.Deferred.<NodeConnection>}
-     * A deferred which is resolved with a NodeConnection or rejected if
-     * we are unable to connect to Node.
-     */
-    var _nodeConnectionDeferred = $.Deferred();
-    
-    /**
-     * @private
-     * @type {NodeConnection}
-     */
-    var _nodeConnection = new NodeConnection();
-    
-   /**
-    * Stop web server.
-    */
-    function stopServer(root) {
-        if (_nodeConnection.connected()) {
-            _nodeConnection.domains.inspectHttpServer.closeServer(root);
+
+    function connectToNode() {
+        console.log("Connecting to node...");
+        if (nodeConnection.connected()) {
+            return $.Deferred().resolve().promise();
+        } else {
+            return nodeConnection.connect(true);
         }
     }
     
-    /**
-    * Start server with specified root.
-    * @param root {string} Path to directory from where web server
-    * serves content.
-    */
-    function startServer(root) {
-        var deferred            = $.Deferred(),
-            connectionTimeout   = setTimeout(function () {
-                console.error("[InspectHTTPServer] Timed out while trying to connect to node");
-                _nodeConnectionDeferred.reject();
-            }, NODE_CONNECTION_TIMEOUT);
+    function loadDomains() {
+        console.log("Loading domains...");
+        if (nodeConnection.connected()) {
+            var modulePath = ExtensionUtils.getModulePath(module, "node/InspectHTTPDomain");
+            return nodeConnection.loadDomains([modulePath], true);
+        } else {
+            return $.Deferred().reject().promise();
+        }
+    }
+    
+    function openHTTPServer(root) {
+        console.log("Opening server connection...");
+        if (nodeConnection.connected()) {
+            return nodeConnection.domains.inspectHttpServer.getServer(root);
+        } else {
+            return $.Deferred().reject().promise();
+        }
+    }
+    
+    function closeHTTPServer(root) {
+        console.log("Closing server connection...");
+        if (nodeConnection.connected()) {
+            return nodeConnection.domains.inspectHttpServer.closeServer(root);
+        } else {
+            return $.Deferred().reject().promise();
+        }
+    }
+    
+    function stopServer(root) {
+        var deferred = $.Deferred();
         
-        _nodeConnection.connect(true).done(function () {
-            _nodeConnection.loadDomains(
-                [ExtensionUtils.getModulePath(module, "node/InspectHTTPDomain")],
-                true
-            ).done(function () {
-                if (_nodeConnection.connected()) {
-                    _nodeConnection.domains.inspectHttpServer.getServer(root).done(function (newAddress) {
-                        console.log("New address: " + JSON.stringify(newAddress));
-                        serverAddress = newAddress;
-                        deferred.resolve();
-                    }).fail(function () {
-                        deferred.reject();
-                    });
-                } else {
+        connectToNode().done(function () {
+            loadDomains().done(function () {
+                closeHTTPServer(root).done(function () {
+                    console.log("Closed connection");
+                    serverAddress = null;
+                    deferred.resolve();
+                }).fail(function () {
                     deferred.reject();
-                }
-                
-                clearTimeout(connectionTimeout);
-                _nodeConnectionDeferred.resolveWith(null, [_nodeConnection]);
-            }).fail(function () { // Failed to connect
-                console.error("[InspectHttpServer] Failed to connect to node", arguments);
-                _nodeConnectionDeferred.reject();
+                });
+            }).fail(function () {
                 deferred.reject();
             });
         }).fail(function () {
@@ -168,51 +157,101 @@ define(function (require, exports, module) {
         
         return deferred.promise();
     }
+    
+    function startServer(root) {
+        var deferred = $.Deferred();
         
-    function onFollowToggle() {
+        connectToNode().done(function () {
+            loadDomains().done(function () {
+                openHTTPServer(root).done(function (address) {
+                    console.log("Opened connection: " + JSON.stringify(address));
+                    serverAddress = address;
+                    deferred.resolve();
+                }).fail(function () {
+                    deferred.reject();
+                });
+            }).fail(function () {
+                deferred.reject();
+            });
+        }).fail(function () {
+            deferred.reject();
+        });
+        
+        return deferred.promise();
+    }
+    
+    function startInspect(root) {
+        inspectEnabled = true;
+        return startServer(projectRoot).done(function () {
+            if (_updateCurrentURL()) {
+                _refreshCurrentURL();
+            }
+        });
+    }
+    
+    function stopInspect(root) {
+        var deferred = $.Deferred();
+        
+        inspectEnabled = false;
+        currentURL = null;
+        inspectPromise.done(function () {
+            stopServer(root).done(function () {
+                deferred.resolve();
+            });
+        });
+        
+        return deferred.promise();
+    }
+
+        
+    function onFollowToggle(forceOff) {
         var $toolbarIcon = $("#inspect-toolbar");
         
         if (SkyLabPopup.getFollowState() === "on") {
             if (!inspectEnabled) {
-                
-                startServer(projectRoot).done(function () {
-                    _updateCurrentURL();
-                    _refreshCurrentURL();
-                    
+                projectRoot = ProjectManager.getProjectRoot().fullPath;
+                inspectPromise = startInspect(projectRoot);
+                inspectPromise.done(function () {
                     $(ProjectManager)
                         .on("beforeProjectClose.edge-code-inspect beforeAppClose.edge-code-inspect", function () {
+                            console.log("Changing project...");
                             if (inspectEnabled) {
-                                stopServer(projectRoot);
+                                stopInspect(projectRoot);
+                                projectRoot = null;
                             }
                         })
                         .on("projectOpen.edge-code-inspect", function (event, newProjectRoot) {
-                            projectRoot = newProjectRoot.fullPath;
-                            if (inspectEnabled) {
-                                startServer(projectRoot);
+                            if (!inspectEnabled) {
+                                projectRoot = newProjectRoot.fullPath;
+                                console.log("New project: " + projectRoot);
+                                inspectPromise = startInspect(projectRoot);
                             }
                         });
                     
                     $(DocumentManager)
-                        .on("currentDocumentChange.edge-code-inspect", _updateCurrentURL)
-                        .on("documentSaved.edge-code-inspect", _refreshCurrentURL);
-                    
+                        .on("documentSaved.edge-code-inspect", _refreshCurrentURL)
+                        .on("currentDocumentChange.edge-code-inspect", function () {
+                            inspectPromise.done(function () {
+                                if (_updateCurrentURL()) {
+                                    _refreshCurrentURL();
+                                }
+                            });
+                        });
+                        
                     $toolbarIcon.addClass("active");
-                    inspectEnabled = true;
+                }).fail(function () {
+                    inspectEnabled = false;
                 });
-                
             } else {
                 console.log("Toggle state switched on but Inspect is enabled");
             }
         } else {
             if (inspectEnabled) {
-                inspectEnabled = false;
-                
-                stopServer(projectRoot);
-                
-                $(DocumentManager).off(".edge-code-inspect");
-                $(ProjectManager).off(".edge-code-inspect");
-                
-                $toolbarIcon.removeClass("active");
+                stopInspect(projectRoot).done(function () {
+                    $(ProjectManager).off(".edge-code-inspect");
+                    $(DocumentManager).off(".edge-code-inspect");
+                    $toolbarIcon.addClass("active");
+                });
             } else {
                 console.log("Toggle state switched off but Inspect is disabled");
             }
@@ -266,8 +305,11 @@ define(function (require, exports, module) {
         SkyLabPopup.initInspect($inspect);
         SkyLabPopup.startListening();
         
-        projectRoot = ProjectManager.getProjectRoot().fullPath;
         nodeConnection = new NodeConnection();
+        
+        var connectionDeferred = nodeConnection.connect(true);
+        connectionDeferred.done();
+        
         return nodeConnection.connect();
     }
     
