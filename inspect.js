@@ -30,42 +30,49 @@ define(function (require, exports, module) {
     "use strict";
 
     var inspectHtml         = require("text!htmlContent/inspect.html"),
-        EdgeInspect         = require('lib/inspect/skylab'),
-        SkyLabController    = EdgeInspect.SkyLabController,
-        EventMap            = require("lib/eventmap"),
+        SkyLabController    = require("lib/inspect/skylab").SkyLabController,
         SkyLabPopup         = require("lib/inspect/skylabpopup"),
         SkyLabView          = require("lib/inspect/skylabview"),
         Strings             = require("strings");
     
     // Brackets modules
-    var CommandManager      = brackets.getModule("command/CommandManager"),
-        DocumentManager     = brackets.getModule("document/DocumentManager"),
-        EditorManager       = brackets.getModule("editor/EditorManager"),
+    var DocumentManager     = brackets.getModule("document/DocumentManager"),
         LanguageManager     = brackets.getModule("language/LanguageManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
-        FileUtils           = brackets.getModule("file/FileUtils"),
-        KeyEvent            = brackets.getModule("utils/KeyEvent"),
-        Menus               = brackets.getModule("command/Menus"),
         NodeConnection      = brackets.getModule("utils/NodeConnection"),
-        PreferencesManager  = brackets.getModule("preferences/PreferencesManager"),
         ProjectManager      = brackets.getModule("project/ProjectManager");
     
-    var _ON_CLASS = "followOn",
-        _OFF_CLASS = "followOff";
-
-    var $mainContent,
-        $inspect,
+    var _ON_CLASS       = "followOn",
+        _OFF_CLASS      = "followOff";
+        
+    var $inspect,
         $inspectPopoverArrow,
         inspectViewState = _OFF_CLASS,
         inspectEnabled = false,
-        inspectShown = false;
-    
-    var projectRoot,
+        inspectShown = false,
+        projectRoot,
         serverAddress,
         currentURL = null,
-        nodeConnection,
+        nodeConnection = new NodeConnection(),
         inspectPromise;
 
+    function inspectEvent(event) {
+        var EVENT_NAMESPACE = ".edge-code-inspect";
+        
+        if (event === undefined) {
+            return EVENT_NAMESPACE;
+        } else if (arguments.length > 1) {
+            return Array.prototype.slice
+                .call(arguments)
+                .map(function (elem) {
+                    return inspectEvent(elem);
+                })
+                .join(" ");
+        } else if (typeof event === "string") {
+            return event + EVENT_NAMESPACE;
+        }
+    }
+    
     function _refreshCurrentURL() {
         if (currentURL) {
             console.log("Refreshing URL: " + currentURL);
@@ -84,16 +91,20 @@ define(function (require, exports, module) {
             
             if (rootIndex === 0) {
                 if (language.getId() === "html") {
-                    relativePath = fullPath.substring(projectRoot.length - 1, fullPath.length);
+                    relativePath = fullPath.substring(projectRoot.length - 1,
+                                                      fullPath.length);
                     relativePath = encodeURIComponent(relativePath);
                     relativePath = relativePath.replace(/%2F/g, "/");
-                    currentURL = "http://" + serverAddress.address + ":" + serverAddress.port + relativePath;
+                    currentURL = "http://" + serverAddress.address + ":" +
+                        serverAddress.port + relativePath;
                     
                     console.log("New URL: " + currentURL);
                     return true;
                 }
             } else {
-                console.log("Document root does not match project root");
+                throw new Error("Document root does not match project root",
+                                projectRoot,
+                                fullPath);
             }
         }
         return false;
@@ -204,7 +215,7 @@ define(function (require, exports, module) {
     }
 
         
-    function onFollowToggle(forceOff) {
+    function onFollowToggle() {
         var $toolbarIcon = $("#inspect-toolbar");
         
         if (SkyLabPopup.getFollowState() === "on") {
@@ -213,14 +224,14 @@ define(function (require, exports, module) {
                 inspectPromise = startInspect(projectRoot);
                 inspectPromise.done(function () {
                     $(ProjectManager)
-                        .on("beforeProjectClose.edge-code-inspect beforeAppClose.edge-code-inspect", function () {
+                        .on(inspectEvent("beforeProjectClose", "beforeAppClose"), function () {
                             console.log("Changing project...");
                             if (inspectEnabled) {
                                 stopInspect(projectRoot);
                                 projectRoot = null;
                             }
                         })
-                        .on("projectOpen.edge-code-inspect", function (event, newProjectRoot) {
+                        .on(inspectEvent("projectOpen"), function (event, newProjectRoot) {
                             if (!inspectEnabled) {
                                 projectRoot = newProjectRoot.fullPath;
                                 console.log("New project: " + projectRoot);
@@ -229,8 +240,8 @@ define(function (require, exports, module) {
                         });
                     
                     $(DocumentManager)
-                        .on("documentSaved.edge-code-inspect", _refreshCurrentURL)
-                        .on("currentDocumentChange.edge-code-inspect", function () {
+                        .on(inspectEvent("documentSaved"), _refreshCurrentURL)
+                        .on(inspectEvent("currentDocumentChange"), function () {
                             inspectPromise.done(function () {
                                 if (_updateCurrentURL()) {
                                     _refreshCurrentURL();
@@ -248,8 +259,8 @@ define(function (require, exports, module) {
         } else {
             if (inspectEnabled) {
                 stopInspect(projectRoot).done(function () {
-                    $(ProjectManager).off(".edge-code-inspect");
-                    $(DocumentManager).off(".edge-code-inspect");
+                    $(ProjectManager).off(inspectEvent());
+                    $(DocumentManager).off(inspectEvent());
                     $toolbarIcon.addClass("active");
                 });
             } else {
@@ -295,8 +306,8 @@ define(function (require, exports, module) {
     
     function init() {
         var $mainContent = Mustache.render(inspectHtml, Strings);
-        
         $("body").append($mainContent);
+        
         $inspect = $("#inspect");
         $inspectPopoverArrow = $(".inspectPopoverArrow");
         $inspect.on("Inspect:followtoggle", onFollowToggle);
@@ -304,13 +315,8 @@ define(function (require, exports, module) {
         SkyLabView.initialize();
         SkyLabPopup.initInspect($inspect);
         SkyLabPopup.startListening();
-        
-        nodeConnection = new NodeConnection();
-        
-        var connectionDeferred = nodeConnection.connect(true);
-        connectionDeferred.done();
-        
-        return nodeConnection.connect();
+
+        return nodeConnection.connect(true);
     }
     
     exports.init = init;
