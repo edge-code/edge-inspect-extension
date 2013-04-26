@@ -602,22 +602,10 @@
   top: 2px;
   padding-right: 8px;
   content: "";
-  background: no-repeat -webkit-image-set(url("../img/inspect_icon.png") 1x, url("../img/inspect_icon@2x.png") 2x);
-  background-size: 16px 16px;
+/*  background: no-repeat -webkit-image-set(url("../img/inspect_icon.png") 1x, url("../img/inspect_icon@2x.png") 2x);*/
+  background: no-repeat -webkit-image-set(url("../img/TC_Preview_Lg_N_D.png") 1x, url("../img/TC_Preview_Lg_N_D@2x.png") 2x);
+  background-size: 16px;
   display: inline-block;
   width: 16px;
   height: 16px;
 }
-
-#inspect-toolbar:hover {
-  -webkit-filter: brightness(5%);
-}
-
-#inspect-toolbar.active {
-  -webkit-filter: brightness(10%);
-}
-
-#inspect-toolbar.active:hover {
-  -webkit-filter: brightness(15%);
-}
-
