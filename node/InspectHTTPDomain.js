@@ -28,24 +28,11 @@ maxerr: 50, node: true */
 (function () {
     "use strict";
     
-    var http     = require("http"),
-        connect  = require("connect");
+    var http    = require("http"),
+        connect = require("connect"),
+        os      = require("os");
     
     var _domainManager;
-
-    /**
-     * When Chrome has a css stylesheet replaced over live development,
-     * it re-checks any image urls in the new css stylesheet. If it has
-     * to hit the server to check them, this is asynchronous, so it causes
-     * two re-layouts of the webpage, which causes flickering. By setting
-     * a max age of five seconds, Chrome won't bother to hit the server
-     * on each keystroke. So, flickers will happen at most once every five
-     * seconds.
-     *
-     * @const
-     * @type {number}
-     */
-    var STATIC_CACHE_MAX_AGE = 5000; // 5 seconds
     
     /**
      * @private
@@ -87,17 +74,33 @@ maxerr: 50, node: true */
     function _createServer(path, createCompleteCallback) {
         var server,
             app,
-            address,
+            externalAddress,
+            port    = 51740,
             pathKey = getPathKey(path);
         
-        function requestRoot(server, cb) {
-            address = server.address();
+        function getExternalAddress() {
+            var interfaces = os.networkInterfaces();
+            var addresses = [];
+
+            Object.keys(interfaces).forEach(function (k) {
+                interfaces[k].forEach(function (addr) {
+                    if (addr.family === "IPv4" && !addr.internal) {
+                        addresses.push(addr.address);
+                    }
+                });
+            });
+        
+            console.log("Addresses: " + addresses);
             
+            return addresses[0];
+        }
+        
+        function requestRoot(server, cb) {
             // Request the root file from the project in order to ensure that the
             // server is actually initialized. If we don't do this, it seems like
             // connect takes time to warm up the server.
             var req = http.get(
-                {host: address.address, port: address.port},
+                {host: externalAddress, port: port},
                 function (res) {
                     cb(null, res);
                 }
@@ -107,21 +110,24 @@ maxerr: 50, node: true */
             });
         }
         
+        externalAddress = getExternalAddress();
+        console.log("Address: " + externalAddress);
+        
         app = connect();
         // JSLint complains if we use `connect.static` because static is a
         // reserved word.
-        app.use(connect["static"](path, { maxAge: STATIC_CACHE_MAX_AGE }));
+        app.use(connect["static"](path));
         app.use(connect.directory(path));
 
         server = http.createServer(app);
-        server.listen(51740, "0.0.0.0", function () {
+        server.listen(port, "0.0.0.0", function () {
             requestRoot(
                 server,
                 function (err, res) {
                     if (err) {
-                        createCompleteCallback("Could not GET root after launching server", null);
+                        createCompleteCallback("Could not GET root after launching server", null, null);
                     } else {
-                        createCompleteCallback(null, server);
+                        createCompleteCallback(null, server, {address: externalAddress, port: port});
                     }
                 }
             );
@@ -145,15 +151,14 @@ maxerr: 50, node: true */
         // Make sure the key doesn't conflict with some built-in property of Object.
         var pathKey = getPathKey(path);
         if (_servers[pathKey]) {
-            cb(null, _servers[pathKey].address());
+            cb(null, _servers[pathKey].address);
         } else {
-            _createServer(path, function (err, server) {
+            _createServer(path, function (err, server, address) {
                 if (err) {
                     cb(err, null);
                 } else {
-                    _servers[pathKey] = server;
-//                    _rewritePaths[pathKey] = {};
-                    cb(null, server.address());
+                    _servers[pathKey] = {server: server, address: address};
+                    cb(null, address);
                 }
             });
         }
@@ -174,7 +179,7 @@ maxerr: 50, node: true */
     function _cmdCloseServer(path, cba) {
         var pathKey = getPathKey(path);
         if (_servers[pathKey]) {
-            var serverToClose = _servers[pathKey];
+            var serverToClose = _servers[pathKey].server;
             delete _servers[pathKey];
             serverToClose.close();
             return true;
@@ -227,6 +232,8 @@ maxerr: 50, node: true */
             }]
         );
     }
+    
+    console.log("hi");
     
     exports.init = init;
     

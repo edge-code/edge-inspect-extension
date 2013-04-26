@@ -79,38 +79,32 @@ define(function (require, exports, module) {
 //        }
     }
         
-    function _handleDocumentChange() {
-        var doc = DocumentManager.getCurrentDocument();
-        // doc will be null if there's no active document (user closed all docs)
-        if (doc && _documentIsHTML(doc)) {
-            $toolbarIcon.addClass("active");
-        } else {
-            $toolbarIcon.removeClass("active");
-        }
-    }
+//    function _handleDocumentChange() {
+//        var doc = DocumentManager.getCurrentDocument();
+//        // doc will be null if there's no active document (user closed all docs)
+//        if (doc && _documentIsHTML(doc)) {
+//            $toolbarIcon.addClass("active");
+//        } else {
+//            $toolbarIcon.removeClass("active");
+//        }
+//    }
     
     function init() {
-        
-        // load styles
-        ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
-        
         // register commands
-        CommandManager.register(Strings.GENERATE_INSPECT_CONTROLS, COMMAND_HANDLE_INSPECT_CONTROLS, inspect.handleInspectControls);
+        CommandManager.register(Strings.GENERATE_INSPECT_CONTROLS,
+                                COMMAND_HANDLE_INSPECT_CONTROLS,
+                                inspect.handleInspectControls);
 
-        
         // set up toolbar icon
         $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings));
         $("#main-toolbar .buttons").append($toolbarIcon);
         $toolbarIcon.on("click", _handleToolbarClick);
-        
-        // add event handler to enable/disable the webfont toolbar icon
-        $(DocumentManager).on("currentDocumentChange", _handleDocumentChange);
-        _handleDocumentChange(); // set to appropriate state for curret doc
-
     }
-
+    
     // load everything when brackets is done loading
     AppInit.appReady(function () {
+        ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
+        
         inspect.init()
             .done(init) // only register commands if the core loaded properly
             .fail(function (err) {

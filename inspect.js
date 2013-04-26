@@ -132,43 +132,41 @@ define(function (require, exports, module) {
     * serves content.
     */
     function startServer(root) {
-        var connectionTimeout = setTimeout(function () {
-            console.error("[InspectHTTPServer] Timed out while trying to connect to node");
-            _nodeConnectionDeferred.reject();
-        }, NODE_CONNECTION_TIMEOUT);
+        var deferred            = $.Deferred(),
+            connectionTimeout   = setTimeout(function () {
+                console.error("[InspectHTTPServer] Timed out while trying to connect to node");
+                _nodeConnectionDeferred.reject();
+            }, NODE_CONNECTION_TIMEOUT);
         
-        _nodeConnection.connect(true).then(function () {
+        _nodeConnection.connect(true).done(function () {
             _nodeConnection.loadDomains(
                 [ExtensionUtils.getModulePath(module, "node/InspectHTTPDomain")],
                 true
-            ).then(
-                function () {
-                    // if we're spun up correctly lets get down to business
-                    var readyToServeDeferred = $.Deferred();
-
-                    if (_nodeConnection.connected()) {
-                        _nodeConnection.domains.inspectHttpServer.getServer(root).done(function (newAddress) {
-                            // Once we successfully have a server, trigger a URL change to load the URL of our document.
-                            serverAddress = newAddress;
-                            
-                            _refreshCurrentURL();
-                            readyToServeDeferred.resolve();
-                        }).fail(function () {
-                            readyToServeDeferred.reject();
-                        });
-                    } else {
-                        readyToServeDeferred.reject();
-                    }
-                    
-                    clearTimeout(connectionTimeout);
-                    _nodeConnectionDeferred.resolveWith(null, [_nodeConnection]);
-                },
-                function () { // Failed to connect
-                    console.error("[InspectHttpServer] Failed to connect to node", arguments);
-                    _nodeConnectionDeferred.reject();
+            ).done(function () {
+                if (_nodeConnection.connected()) {
+                    _nodeConnection.domains.inspectHttpServer.getServer(root).done(function (newAddress) {
+                        console.log("New address: " + JSON.stringify(newAddress));
+                        serverAddress = newAddress;
+                        deferred.resolve();
+                    }).fail(function () {
+                        deferred.reject();
+                    });
+                } else {
+                    deferred.reject();
                 }
-            );
+                
+                clearTimeout(connectionTimeout);
+                _nodeConnectionDeferred.resolveWith(null, [_nodeConnection]);
+            }).fail(function () { // Failed to connect
+                console.error("[InspectHttpServer] Failed to connect to node", arguments);
+                _nodeConnectionDeferred.reject();
+                deferred.reject();
+            });
+        }).fail(function () {
+            deferred.reject();
         });
+        
+        return deferred.promise();
     }
         
     function onFollowToggle() {
@@ -176,30 +174,32 @@ define(function (require, exports, module) {
         
         if (SkyLabPopup.getFollowState() === "on") {
             if (!inspectEnabled) {
-                inspectEnabled = true;
-                projectRoot = ProjectManager.getProjectRoot().fullPath;
                 
-                $(ProjectManager)
-                    .on("beforeProjectClose.edge-code-inspect beforeAppClose.edge-code-inspect", function () {
-                        if (inspectEnabled) {
-                            stopServer(projectRoot);
-                        }
-                    })
-                    .on("projectOpen.edge-code-inspect", function (event, newProjectRoot) {
-                        projectRoot = newProjectRoot.fullPath;
-                        if (inspectEnabled) {
-                            startServer(projectRoot);
-                        }
-                    });
+                startServer(projectRoot).done(function () {
+                    _updateCurrentURL();
+                    _refreshCurrentURL();
+                    
+                    $(ProjectManager)
+                        .on("beforeProjectClose.edge-code-inspect beforeAppClose.edge-code-inspect", function () {
+                            if (inspectEnabled) {
+                                stopServer(projectRoot);
+                            }
+                        })
+                        .on("projectOpen.edge-code-inspect", function (event, newProjectRoot) {
+                            projectRoot = newProjectRoot.fullPath;
+                            if (inspectEnabled) {
+                                startServer(projectRoot);
+                            }
+                        });
+                    
+                    $(DocumentManager)
+                        .on("currentDocumentChange.edge-code-inspect", _updateCurrentURL)
+                        .on("documentSaved.edge-code-inspect", _refreshCurrentURL);
+                    
+                    $toolbarIcon.addClass("active");
+                    inspectEnabled = true;
+                });
                 
-                $(DocumentManager)
-                    .on("currentDocumentChange.edge-code-inspect", _updateCurrentURL)
-                    .on("documentSaved.edge-code-inspect", _refreshCurrentURL);
-                
-                _updateCurrentURL();
-                startServer(projectRoot);
-                
-                $toolbarIcon.addClass("active");
             } else {
                 console.log("Toggle state switched on but Inspect is enabled");
             }
@@ -265,7 +265,8 @@ define(function (require, exports, module) {
         SkyLabView.initialize();
         SkyLabPopup.initInspect($inspect);
         SkyLabPopup.startListening();
-
+        
+        projectRoot = ProjectManager.getProjectRoot().fullPath;
         nodeConnection = new NodeConnection();
         return nodeConnection.connect();
     }
