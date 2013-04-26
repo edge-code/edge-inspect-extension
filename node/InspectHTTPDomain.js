@@ -116,8 +116,8 @@ maxerr: 50, node: true */
         // JSLint complains if we use `connect.static` because static is a
         // reserved word.
         app.use(connect["static"](path));
-        app.use(connect.directory(path));
-
+        app.use(connect.limit("1mb"));
+        
         server = http.createServer(app);
         server.listen(0, function () {
             requestRoot(
