@@ -75,7 +75,6 @@ maxerr: 50, node: true */
         var server,
             app,
             externalAddress,
-            port    = 51740,
             pathKey = getPathKey(path);
         
         function getExternalAddress() {
@@ -100,7 +99,7 @@ maxerr: 50, node: true */
             // server is actually initialized. If we don't do this, it seems like
             // connect takes time to warm up the server.
             var req = http.get(
-                {host: externalAddress, port: port},
+                {host: externalAddress, port: server.address().port},
                 function (res) {
                     cb(null, res);
                 }
@@ -120,14 +119,15 @@ maxerr: 50, node: true */
         app.use(connect.directory(path));
 
         server = http.createServer(app);
-        server.listen(port, "0.0.0.0", function () {
+        server.listen(0, function () {
             requestRoot(
                 server,
                 function (err, res) {
                     if (err) {
                         createCompleteCallback("Could not GET root after launching server", null, null);
                     } else {
-                        createCompleteCallback(null, server, {address: externalAddress, port: port});
+                        createCompleteCallback(null, server, {address: externalAddress,
+                                                              port: server.address().port});
                     }
                 }
             );
