@@ -23,73 +23,31 @@
 
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
-/*global define, brackets, $, window, Mustache, less, setTimeout */
+/*global define, brackets, $, Mustache */
 
 define(function (require, exports, module) {
     "use strict";
     
     // Modules
     var inspect                 = require("inspect"),
-        inspectHtml             = require("text!htmlContent/inspect.html"),
         inspectToolbarHtml      = require("text!htmlContent/inspect-toolbar.html"),
         Strings                 = require("strings");
 
     var AppInit                 = brackets.getModule("utils/AppInit"),
         ExtensionUtils          = brackets.getModule("utils/ExtensionUtils"),
-        StringUtils             = brackets.getModule("utils/StringUtils"),
-        DocumentManager         = brackets.getModule("document/DocumentManager"),
-        EditorManager           = brackets.getModule("editor/EditorManager"),
-        PreferencesManager      = brackets.getModule("preferences/PreferencesManager"),
-        CodeHintManager         = brackets.getModule("editor/CodeHintManager"),
-        CommandManager          = brackets.getModule("command/CommandManager"),
-        Commands                = brackets.getModule("command/Commands"),
-        Dialogs                 = brackets.getModule("widgets/Dialogs"),
-        Menus                   = brackets.getModule("command/Menus");
+        CommandManager          = brackets.getModule("command/CommandManager");
     
     // DOM elements and HTML
-    var $toolbarIcon = null,
-        $inspectControls = "";
-    
-    
-    var Paths = {
-        ROOT : require.toUrl('./')
-    };
+    var $toolbarIcon = null;
     
     // Commands & Prefs Strings
     var COMMAND_HANDLE_INSPECT_CONTROLS = "edgeinspect.handleinspectcontrols";
     
-    function _documentIsHTML(doc) {
-        return doc && doc.getLanguage().getName() === "HTML";
-    }
-    
-    function _handleGenerateInspectControls() {
-        
-    }
-
-    function _handleToolbarClick() {
-        var doc = DocumentManager.getCurrentDocument();
+    function handleToolbarClick() {
         CommandManager.execute(COMMAND_HANDLE_INSPECT_CONTROLS);
-
-//        Put back when we get everything working        
-//        if (!doc || !_documentIsHTML(doc)) {
-//            console.log('Inspect should only work on HTML documents');
-//            //_showHowtoDialog();
-//        } else {
-//            CommandManager.execute(COMMAND_HANDLE_INSPECT_CONTROLS);
-//        }
     }
-        
-//    function _handleDocumentChange() {
-//        var doc = DocumentManager.getCurrentDocument();
-//        // doc will be null if there's no active document (user closed all docs)
-//        if (doc && _documentIsHTML(doc)) {
-//            $toolbarIcon.addClass("active");
-//        } else {
-//            $toolbarIcon.removeClass("active");
-//        }
-//    }
-    
-    function init() {
+
+    function initToolbar() {
         // register commands
         CommandManager.register(Strings.GENERATE_INSPECT_CONTROLS,
                                 COMMAND_HANDLE_INSPECT_CONTROLS,
@@ -98,18 +56,16 @@ define(function (require, exports, module) {
         // set up toolbar icon
         $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings));
         $("#main-toolbar .buttons").append($toolbarIcon);
-        $toolbarIcon.on("click", _handleToolbarClick);
+        $toolbarIcon.on("click", handleToolbarClick);
     }
     
-    // load everything when brackets is done loading
     AppInit.appReady(function () {
         ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
         
         inspect.init()
-            .done(init) // only register commands if the core loaded properly
+            .done(initToolbar)
             .fail(function (err) {
-                // TODO: Should probably keep trying at some interval -- may have failed because not connected to net
-                console.log("[edge-inspect extension] failed to initialize: " + err);
+                console.log("Inspect initialization failed: " + err);
             });
     });
 });

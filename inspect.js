@@ -41,13 +41,9 @@ define(function (require, exports, module) {
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         NodeConnection      = brackets.getModule("utils/NodeConnection"),
         ProjectManager      = brackets.getModule("project/ProjectManager");
-    
-    var _ON_CLASS       = "followOn",
-        _OFF_CLASS      = "followOff";
         
     var $inspect,
         $inspectPopoverArrow,
-        inspectViewState = _OFF_CLASS,
         inspectEnabled = false,
         inspectShown = false,
         projectRoot,
@@ -277,7 +273,8 @@ define(function (require, exports, module) {
             $inspectPopoverArrow.removeClass("visible");
         });
         
-        $(".content, .sidebar").off(".inspect");
+        $(".content, .sidebar")
+            .off(inspectEvent());
         inspectShown = false;
     }
     
@@ -292,7 +289,8 @@ define(function (require, exports, module) {
         $inspect.addClass("visible");
         $inspectPopoverArrow.addClass("visible");
         
-        $(".content, .sidebar").on("click.inspect keyup.inspect", hideControls);
+        $(".content, .sidebar")
+            .on(inspectEvent("mousedown", "keyup"), hideControls);
         inspectShown = true;
     }
     
