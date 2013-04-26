@@ -598,14 +598,22 @@
  *  Brackets Toolbar Icon Styling
  */
 #inspect-toolbar {
-  position: relative;
-  top: 2px;
-  padding-right: 8px;
-  content: "";
-/*  background: no-repeat -webkit-image-set(url("../img/inspect_icon.png") 1x, url("../img/inspect_icon@2x.png") 2x);*/
+  margin-left: 3px ! important;
   background: no-repeat -webkit-image-set(url("../img/TC_Preview_Lg_N_D.png") 1x, url("../img/TC_Preview_Lg_N_D@2x.png") 2x);
   background-size: 22px;
   display: inline-block;
   width: 22px;
   height: 18px;
+}
+
+#inspect-toolbar:hover {
+
+}
+
+#inspect-toolbar.active {
+
+}
+
+#inspect-toolbar.active:hover {
+
 }
