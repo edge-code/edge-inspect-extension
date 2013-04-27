@@ -2,6 +2,11 @@
     "name": "edge-code-inspect",
     "description": "Edge Inspect extension for Edge Code",
     "version": "0.1.0",
-    "keywords": [".html", ".css"],
-    "homepage": "http://html.adobe.com/edge/inspect/"
+    "keywords": [".css", ".html", ".js"],
+    "homepage": "https://git.corp.adobe.com/edge/edge-code-inspect",
+    "bugs": "https://git.corp.adobe.com/edge/edge-code-inspect/issues",
+    "repository" : { 
+        "type" : "git",
+        "url" : "https://git.corp.adobe.com/edge/edge-code-inspect.git"
+    }
 }
