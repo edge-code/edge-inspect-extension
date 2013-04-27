@@ -31,9 +31,7 @@ maxerr: 50, node: true */
     var http    = require("http"),
         connect = require("connect"),
         os      = require("os");
-    
-    var _domainManager;
-    
+        
     /**
      * @private
      * @type {Object.<string, http.Server>}
@@ -192,7 +190,7 @@ maxerr: 50, node: true */
      * @param {DomainManager} domainManager The DomainManager for the server
      */
     function init(domainManager) {
-        _domainManager = domainManager;
+        var _domainManager = domainManager;
         
         if (!domainManager.hasDomain("inspectHttpServer")) {
             domainManager.registerDomain("inspectHttpServer", {major: 0, minor: 1});
