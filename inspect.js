@@ -311,7 +311,7 @@ define(function (require, exports, module) {
         $inspect.on("Inspect:followtoggle", onFollowToggle);
 
         SkyLabView.initialize();
-        SkyLabPopup.initInspect($inspect);
+        SkyLabPopup.initInspect($inspect, Strings);
         SkyLabPopup.startListening();
 
         return nodeConnection.connect(true);
