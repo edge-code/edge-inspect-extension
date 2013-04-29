@@ -231,8 +231,6 @@ maxerr: 50, node: true */
         );
     }
     
-    console.log("hi");
-    
     exports.init = init;
     
 }());
