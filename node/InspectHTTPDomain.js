@@ -28,9 +28,10 @@ maxerr: 50, node: true */
 (function () {
     "use strict";
     
-    var http    = require("http"),
-        connect = require("connect"),
-        os      = require("os");
+    var domain  = require("domain"),
+        os      = require("os"),
+        http    = require("http"),
+        connect = require("connect");
         
     /**
      * @private
@@ -190,7 +191,12 @@ maxerr: 50, node: true */
      * @param {DomainManager} domainManager The DomainManager for the server
      */
     function init(domainManager) {
-        var _domainManager = domainManager;
+        var _domainManager  = domainManager,
+            inspectDomain   = domain.create();
+        
+        inspectDomain.on("error", function (err) {
+            console.log("InspectHTTPDomain error: " + err);
+        });
         
         if (!domainManager.hasDomain("inspectHttpServer")) {
             domainManager.registerDomain("inspectHttpServer", {major: 0, minor: 1});
@@ -198,7 +204,7 @@ maxerr: 50, node: true */
         _domainManager.registerCommand(
             "inspectHttpServer",
             "getServer",
-            _cmdGetServer,
+            inspectDomain.bind(_cmdGetServer),
             true,
             "Starts or returns an existing server for the given path.",
             [{
@@ -215,7 +221,7 @@ maxerr: 50, node: true */
         _domainManager.registerCommand(
             "inspectHttpServer",
             "closeServer",
-            _cmdCloseServer,
+            inspectDomain.bind(_cmdCloseServer),
             false,
             "Closes the server for the given path.",
             [{
