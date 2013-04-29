@@ -213,7 +213,7 @@ define(function (require, exports, module) {
             console.log("Failed to disable Inspect");
         });
         
-        return deferred;
+        return deferred.promise();
     }
 
         
@@ -316,12 +316,7 @@ define(function (require, exports, module) {
         $inspectPopoverArrow = $(".inspectPopoverArrow");
         $inspect.on("Inspect:followtoggle", onFollowToggle);
 
-//        SkyLabController.triggerFirstRunCheck();
-        SkyLabController.connectToDeviceManager();
-        setInterval(function () {
-            SkyLabController.pingDeviceManager();
-        }, 20000);
-        //SkyLabView.initialize();
+        SkyLabView.initialize();
         SkyLabPopup.initInspect($inspect, Strings);
         SkyLabPopup.startListening();
 
