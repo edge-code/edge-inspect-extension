@@ -49,7 +49,7 @@ define(function (require, exports, module) {
         currentURL = null,
         nodeConnection = new NodeConnection(),
         inspectPromise;
-
+    
     function inspectEvent(event) {
         var EVENT_NAMESPACE = ".edge-code-inspect";
         
@@ -185,23 +185,13 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
     
-    function startInspect(root) {
-        inspectEnabled = true;
-        return startServer(projectRoot).done(function () {
-            if (updateCurrentURL()) {
-                refreshCurrentURL();
-            }
-        }).fail(function () {
-            inspectEnabled = false;
-            console.log("Failed to enable Inspect");
-        });
-    }
-    
     function stopInspect(root) {
         var deferred = $.Deferred();
         
         inspectEnabled = false;
         currentURL = null;
+        
+        $(nodeConnection).off(inspectEvent());
         
         inspectPromise.done(function () {
             stopServer(root).done(function () {
@@ -215,7 +205,27 @@ define(function (require, exports, module) {
         
         return deferred.promise();
     }
-
+    
+    function startInspect(root) {
+        inspectEnabled = true;
+        return startServer(projectRoot).done(function () {
+            if (updateCurrentURL()) {
+                refreshCurrentURL();
+            }
+            
+            $(nodeConnection).on(inspectEvent("base.newDomains"), function () {
+                console.log("New domains!");
+                if (inspectEnabled) {
+                    stopInspect(projectRoot);
+                    inspectPromise = startInspect(projectRoot);
+                }
+            });
+            
+        }).fail(function () {
+            inspectEnabled = false;
+            console.log("Failed to enable Inspect");
+        });
+    }
         
     function onFollowToggle() {
         var $toolbarIcon = $("#inspect-toolbar");
@@ -319,7 +329,7 @@ define(function (require, exports, module) {
         SkyLabView.initialize();
         SkyLabPopup.initInspect($inspect, Strings);
         SkyLabPopup.startListening();
-
+        
         return nodeConnection.connect(true);
     }
     
