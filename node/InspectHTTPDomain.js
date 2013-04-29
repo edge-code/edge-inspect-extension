@@ -82,7 +82,8 @@ maxerr: 50, node: true */
 
             Object.keys(interfaces).forEach(function (k) {
                 interfaces[k].forEach(function (addr) {
-                    if (addr.family === "IPv4" && !addr.internal) {
+                    if (addr.family === "IPv4" && !addr.internal &&
+                            addr.address.split(".")[0] !== "169") {
                         addresses.push(addr.address);
                     }
                 });
