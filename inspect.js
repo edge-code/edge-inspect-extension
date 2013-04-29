@@ -21,26 +21,24 @@
  * 
  */
 
-
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50,  */
-/*global brackets, require, define, Mustache, $, setTimeout, clearTimeout */
-
+/*global brackets, require, define, Mustache, $, setInterval */
 
 define(function (require, exports, module) {
     "use strict";
 
-    var inspectHtml         = require("text!htmlContent/inspect.html"),
-        SkyLabController    = require("lib/inspect/skylab").SkyLabController,
-        SkyLabPopup         = require("lib/inspect/skylabpopup"),
-        SkyLabView          = require("lib/inspect/skylabview"),
-        Strings             = require("strings");
-    
     // Brackets modules
     var DocumentManager     = brackets.getModule("document/DocumentManager"),
         LanguageManager     = brackets.getModule("language/LanguageManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         NodeConnection      = brackets.getModule("utils/NodeConnection"),
         ProjectManager      = brackets.getModule("project/ProjectManager");
+    
+    var inspectHtml         = require("text!htmlContent/inspect.html"),
+        SkyLabController    = require("lib/inspect/skylab").SkyLabController,
+        SkyLabPopup         = require("lib/inspect/skylabpopup"),
+        SkyLabView          = require("lib/inspect/skylabview"),
+        Strings             = require("strings");
         
     var $inspect,
         $inspectPopoverArrow,
@@ -69,14 +67,14 @@ define(function (require, exports, module) {
         }
     }
     
-    function _refreshCurrentURL() {
+    function refreshCurrentURL() {
         if (currentURL) {
             console.log("Refreshing URL: " + currentURL);
             SkyLabController.followUrl(currentURL, "false");
         }
     }
     
-    function _updateCurrentURL() {
+    function updateCurrentURL() {
         var document = DocumentManager.getCurrentDocument();
         
         if (document && document.file) {
@@ -190,9 +188,12 @@ define(function (require, exports, module) {
     function startInspect(root) {
         inspectEnabled = true;
         return startServer(projectRoot).done(function () {
-            if (_updateCurrentURL()) {
-                _refreshCurrentURL();
+            if (updateCurrentURL()) {
+                refreshCurrentURL();
             }
+        }).fail(function () {
+            inspectEnabled = false;
+            console.log("Failed to enable Inspect");
         });
     }
     
@@ -201,13 +202,18 @@ define(function (require, exports, module) {
         
         inspectEnabled = false;
         currentURL = null;
+        
         inspectPromise.done(function () {
             stopServer(root).done(function () {
                 deferred.resolve();
             });
+        }).fail(function () {
+            inspectEnabled = true;
+            deferred.reject();
+            console.log("Failed to disable Inspect");
         });
         
-        return deferred.promise();
+        return deferred;
     }
 
         
@@ -236,11 +242,11 @@ define(function (require, exports, module) {
                         });
                     
                     $(DocumentManager)
-                        .on(inspectEvent("documentSaved"), _refreshCurrentURL)
+                        .on(inspectEvent("documentSaved"), refreshCurrentURL)
                         .on(inspectEvent("currentDocumentChange"), function () {
                             inspectPromise.done(function () {
-                                if (_updateCurrentURL()) {
-                                    _refreshCurrentURL();
+                                if (updateCurrentURL()) {
+                                    refreshCurrentURL();
                                 }
                             });
                         });
@@ -310,7 +316,12 @@ define(function (require, exports, module) {
         $inspectPopoverArrow = $(".inspectPopoverArrow");
         $inspect.on("Inspect:followtoggle", onFollowToggle);
 
-        SkyLabView.initialize();
+//        SkyLabController.triggerFirstRunCheck();
+        SkyLabController.connectToDeviceManager();
+        setInterval(function () {
+            SkyLabController.pingDeviceManager();
+        }, 20000);
+        //SkyLabView.initialize();
         SkyLabPopup.initInspect($inspect, Strings);
         SkyLabPopup.startListening();
 
