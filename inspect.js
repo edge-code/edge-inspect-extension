@@ -79,11 +79,12 @@ define(function (require, exports, module) {
         
         if (document && document.file) {
             var fullPath    = document.file.fullPath,
-                language    = LanguageManager.getLanguageForPath(fullPath),
                 rootIndex   = fullPath.indexOf(projectRoot),
                 relativePath;
             
             if (rootIndex === 0) {
+                var language = LanguageManager.getLanguageForPath(fullPath);
+                
                 if (language.getId() === "html") {
                     relativePath = fullPath.substring(projectRoot.length - 1,
                                                       fullPath.length);
