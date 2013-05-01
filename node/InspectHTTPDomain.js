@@ -71,12 +71,8 @@ maxerr: 50, node: true */
      *    was an error). 
      */
     function _createServer(path, createCompleteCallback) {
-        var server,
-            app,
-            externalAddress,
-            pathKey = getPathKey(path);
         
-        function getExternalAddress() {
+        function getExternalAddresses() {
             var interfaces = os.networkInterfaces();
             var addresses = [];
 
@@ -91,17 +87,15 @@ maxerr: 50, node: true */
                 });
             });
         
-            console.log("Addresses: " + addresses);
-            
-            return addresses[0];
+            return addresses;
         }
         
-        function requestRoot(server, cb) {
+        function requestRoot(server, host, cb) {
             // Request the root file from the project in order to ensure that the
             // server is actually initialized. If we don't do this, it seems like
             // connect takes time to warm up the server.
             var req = http.get(
-                {host: externalAddress, port: server.address().port},
+                {host: host, port: server.address().port},
                 function (res) {
                     cb(null, res);
                 }
@@ -111,29 +105,32 @@ maxerr: 50, node: true */
             });
         }
         
-        externalAddress = getExternalAddress();
-        console.log("Address: " + externalAddress);
+        var externalAddresses = getExternalAddresses();
         
-        app = connect();
-        // JSLint complains if we use `connect.static` because static is a
-        // reserved word.
-        app.use(connect["static"](path));
-        app.use(connect.limit("1mb"));
-        
-        server = http.createServer(app);
-        server.listen(0, function () {
-            requestRoot(
-                server,
-                function (err, res) {
-                    if (err) {
-                        createCompleteCallback("Could not GET root after launching server", null, null);
-                    } else {
-                        createCompleteCallback(null, server, {address: externalAddress,
-                                                              port: server.address().port});
-                    }
-                }
-            );
-        });
+        if (externalAddresses.length === 0) {
+            createCompleteCallback("Could not find an external IP address", null, null);
+        } else {
+            var host    = externalAddresses[0],
+                app     = connect(),
+                server;
+            // JSLint complains if we use `connect.static` because static is a
+            // reserved word.
+            app.use(connect["static"](path));
+            app.use(connect.limit("1mb"));
+            
+            server = http.createServer(app);
+            server.listen(0, function () {
+                requestRoot(server, host,
+                    function (err, res) {
+                        if (err) {
+                            createCompleteCallback("Could not GET root after launching server", null, null);
+                        } else {
+                            createCompleteCallback(null, server, {address: host,
+                                                                  port: server.address().port});
+                        }
+                    });
+            });
+        }
     }
     
     /**
