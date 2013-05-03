@@ -22,7 +22,7 @@
  */
 
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50,  */
-/*global brackets, require, define, Mustache, $, setInterval */
+/*global brackets, require, define, Mustache, $, setInterval, window */
 
 define(function (require, exports, module) {
     "use strict";
@@ -261,6 +261,9 @@ define(function (require, exports, module) {
                                 }
                             });
                         });
+                    
+                    $(window)
+                        .on(inspectEvent("focus"), refreshCurrentURL);
                         
                     $toolbarIcon.addClass("active");
                 }).fail(function () {
@@ -274,6 +277,7 @@ define(function (require, exports, module) {
                 stopInspect(projectRoot).done(function () {
                     $(ProjectManager).off(inspectEvent());
                     $(DocumentManager).off(inspectEvent());
+                    $(window).off(inspectEvent());
                     $toolbarIcon.addClass("active");
                 });
             } else {
