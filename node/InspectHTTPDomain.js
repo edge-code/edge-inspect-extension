@@ -105,6 +105,28 @@ maxerr: 50, node: true */
             });
         }
         
+        function rejectOffSubnetRequests(serverAddress) {
+            var serverAddressOctets = serverAddress.split(".");
+            
+            return function (request, response, next) {
+                var clientAddress = request.connection.remoteAddress;
+                
+                if (clientAddress) {
+                    var clientAddressOctets = clientAddress.split(".");
+                    
+                    if (clientAddressOctets[0] === serverAddressOctets[0] &&
+                            clientAddressOctets[1] === serverAddressOctets[1] &&
+                            clientAddressOctets[2] === serverAddressOctets[2]) {
+                        return next();
+                    }
+                }
+                
+                console.log("Rejecting off-subnet request from address: " + clientAddress);
+                response.statusCode = 403;
+                response.end("Forbidden");
+            };
+        }
+         
         var externalAddresses = getExternalAddresses();
         
         if (externalAddresses.length === 0) {
@@ -113,8 +135,8 @@ maxerr: 50, node: true */
             var host    = externalAddresses[0],
                 app     = connect(),
                 server;
-            // JSLint complains if we use `connect.static` because static is a
-            // reserved word.
+
+            app.use(rejectOffSubnetRequests(host));
             app.use(connect["static"](path));
             app.use(connect.limit("1mb"));
             
