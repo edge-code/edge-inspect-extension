@@ -55,7 +55,7 @@ define(function (require, exports, module) {
 
         // set up toolbar icon
         $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings));
-        $("#main-toolbar .buttons").append($toolbarIcon);
+        $toolbarIcon.insertAfter("#toolbar-go-live");
         $toolbarIcon.on("click", handleToolbarClick);
     }
     
