@@ -34,35 +34,18 @@ define(function (require, exports, module) {
         Strings                 = require("strings");
 
     var AppInit                 = brackets.getModule("utils/AppInit"),
-        ExtensionUtils          = brackets.getModule("utils/ExtensionUtils"),
-        CommandManager          = brackets.getModule("command/CommandManager");
-    
-    // DOM elements and HTML
-    var $toolbarIcon = null;
-    
-    // Commands & Prefs Strings
-    var COMMAND_HANDLE_INSPECT_CONTROLS = "edgeinspect.handleinspectcontrols";
-    
-    function handleToolbarClick() {
-        CommandManager.execute(COMMAND_HANDLE_INSPECT_CONTROLS);
-    }
-
-    function initToolbar() {
-        // register commands
-        CommandManager.register(Strings.GENERATE_INSPECT_CONTROLS,
-                                COMMAND_HANDLE_INSPECT_CONTROLS,
-                                inspect.handleInspectControls);
-
-        // set up toolbar icon
-        $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings));
-        $toolbarIcon.insertAfter("#toolbar-go-live");
-        $toolbarIcon.on("click", handleToolbarClick);
-    }
+        ExtensionUtils          = brackets.getModule("utils/ExtensionUtils");
     
     AppInit.appReady(function () {
         ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
         
-        inspect.init()
+        function initToolbar() {
+            var $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings));
+            $toolbarIcon.insertAfter("#toolbar-go-live");
+            $toolbarIcon.on("click", inspect.handleInspectControls);
+        }
+        
+        inspect.initAdmin()
             .done(initToolbar)
             .fail(function (err) {
                 console.log("Inspect initialization failed: " + err);
