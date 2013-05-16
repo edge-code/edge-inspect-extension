@@ -598,22 +598,56 @@
  *  Brackets Toolbar Icon Styling
  */
 #inspect-toolbar {
-    margin-left: 5px ! important;
-    background: no-repeat -webkit-image-set(url("../img/TC_Preview_Lg_N_D.png") 1x, url("../img/TC_Preview_Lg_N_D@2x.png") 2x);
-    background-size: 22px;
+    margin-left: 3px ! important;
+    background: url("../img/toolbar.svg") no-repeat;
+    background-position: 0 0;
     display: inline-block;
-    width: 22px;
-    height: 18px;
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
 }
 
-#inspect-toolbar:hover {
-    opacity: 0.75;
+#inspect-toolbar:active {
+    opacity: 0.5;
+}
+
+#inspect-toolbar.success {
+    opacity: 1.0;
+    background-position: -20px 0px;
+}
+
+#inspect-toolbar.success:active {
+    opacity: 0.5;
 }
 
 #inspect-toolbar.active {
-
+    opacity: 1.0;
+    background-position: -40px 0px;
 }
 
-#inspect-toolbar.active:hover {
+#inspect-toolbar.active:active {
+    opacity: 0.5;
+}
 
+#inspect-toolbar.warning {
+    opacity: 1.0;
+    background-position: -60px 0px;
+}
+
+#inspect-toolbar.warning:active {
+    opacity: 0.5;
+}
+
+#inspect-toolbar.error {
+    opacity: 1.0;
+    background-position: -80px 0px;
+}
+
+#inspect-toolbar.error:active {
+    opacity: 0.5;
+}
+
+#inspect-toolbar.inactive {
+    opacity: 0.3;
+    background-position: 0px 0px;
 }

@@ -288,7 +288,7 @@ define(function (require, exports, module) {
                     $(ProjectManager).off(inspectEvent());
                     $(DocumentManager).off(inspectEvent());
                     $(window).off(inspectEvent());
-                    $toolbarIcon.addClass("active");
+                    $toolbarIcon.removeClass("active");
                 });
             } else {
                 console.log("Toggle state switched off but Inspect is disabled");
