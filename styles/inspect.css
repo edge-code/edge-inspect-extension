@@ -598,7 +598,7 @@
  *  Brackets Toolbar Icon Styling
  */
 #inspect-toolbar {
-    margin-left: 3px ! important;
+    margin-left: 5px ! important;
     background: url("../img/toolbar.svg") no-repeat;
     background-position: 0 0;
     display: inline-block;
