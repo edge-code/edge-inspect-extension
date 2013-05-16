@@ -44,6 +44,7 @@ define(function (require, exports, module) {
         $inspectPopoverArrow,
         inspectEnabled = false,
         inspectShown = false,
+        deviceManagerInitialized = false,
         projectRoot,
         serverAddress,
         currentURL = null,
@@ -65,6 +66,15 @@ define(function (require, exports, module) {
         } else if (typeof event === "string") {
             return event + EVENT_NAMESPACE;
         }
+    }
+    
+    function initDeviceManager() {
+        console.log("Initializing device manager...");
+        SkyLabView.initialize();
+        SkyLabPopup.initInspect($inspect, Strings);
+        SkyLabPopup.startListening();
+        
+        deviceManagerInitialized = true;
     }
     
     function refreshCurrentURL() {
@@ -305,6 +315,10 @@ define(function (require, exports, module) {
             inspectTop      = iconOffset - 20,
             arrowTop        = inspectTop + 22;
         
+        if (!deviceManagerInitialized) {
+            initDeviceManager();
+        }
+        
         $inspect.css("top", inspectTop);
         $inspectPopoverArrow.css("top", arrowTop);
         $inspect.addClass("visible");
@@ -323,21 +337,18 @@ define(function (require, exports, module) {
         }
     }
     
-    function init() {
+    function initAdmin() {
         var $mainContent = Mustache.render(inspectHtml, Strings);
         $("body").append($mainContent);
         
         $inspect = $("#inspect");
         $inspectPopoverArrow = $(".inspectPopoverArrow");
         $inspect.on("Inspect:followtoggle", onFollowToggle);
-
-        SkyLabView.initialize();
-        SkyLabPopup.initInspect($inspect, Strings);
-        SkyLabPopup.startListening();
         
         return nodeConnection.connect(true);
     }
     
-    exports.init = init;
+    exports.initAdmin = initAdmin;
+    exports.initDeviceManager = initDeviceManager;
     exports.handleInspectControls = handleInspectControls;
 });
