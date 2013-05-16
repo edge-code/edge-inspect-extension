@@ -37,16 +37,20 @@ define(function (require, exports, module) {
         ExtensionUtils          = brackets.getModule("utils/ExtensionUtils");
     
     AppInit.appReady(function () {
+        var $toolbarIcon;
+        
         ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
         
-        function initToolbar() {
-            var $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings));
-            $toolbarIcon.insertAfter("#toolbar-go-live");
-            $toolbarIcon.on("click", inspect.handleInspectControls);
-        }
+        $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings))
+            .addClass("inactive")
+            .insertAfter("#toolbar-go-live")
+            .attr("title", Strings.INSPECT_BUTTON);
         
         inspect.initAdmin()
-            .done(initToolbar)
+            .done(function () {
+                $toolbarIcon.removeClass("inactive");
+                $toolbarIcon.on("click", inspect.handleInspectControls);
+            })
             .fail(function (err) {
                 console.log("Inspect initialization failed: " + err);
             });
