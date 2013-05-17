@@ -51,6 +51,14 @@ define(function (require, exports, module) {
         nodeConnection = new NodeConnection(),
         inspectPromise;
     
+    /**
+     * For a given event name, build a new event name from within the Inspect
+     * namespace. The parameter is optional and, if provided, can either be a
+     * single String or an array of Strings. If no parameter is provided, the 
+     * namespace is returned. If a single name is provide, a single scoped name
+     * is returned. If an array of names are passed, an array of scoped names
+     * is returned.
+     */
     function inspectEvent(event) {
         var EVENT_NAMESPACE = ".edge-code-inspect";
         
@@ -68,6 +76,9 @@ define(function (require, exports, module) {
         }
     }
     
+    /**
+     * Initialize the connection to the Inspect device manager.
+     */
     function initDeviceManager() {
         console.log("Initializing device manager...");
         SkyLabView.initialize();
@@ -77,6 +88,11 @@ define(function (require, exports, module) {
         deviceManagerInitialized = true;
     }
     
+    /**
+     * Request that the device manager direct clients to the current URL. This
+     * has the effect of refreshing and synchronizing clients. (Note though that
+     * this does not direct the clients to clear their cache.)
+     */
     function refreshCurrentURL() {
         if (currentURL) {
             console.log("Refreshing URL: " + currentURL);
@@ -84,6 +100,13 @@ define(function (require, exports, module) {
         }
     }
     
+    /**
+     * Calculate and record a URL for the current document. If the document is
+     * an HTML file, the URL will point to that file. Otherwise, it will not 
+     * change the URL.
+     *
+     * @return boolean - true if the URL has changed; false otherwise.
+     */
     function updateCurrentURL() {
         var document = DocumentManager.getCurrentDocument();
         
@@ -115,6 +138,11 @@ define(function (require, exports, module) {
         return false;
     }
 
+    /**
+     * Initialize the connection to the Node process.
+     * 
+     * @return jQuery.Promise - Resolves when the connection is open.
+     */
     function connectToNode() {
         console.log("Connecting to node...");
         if (nodeConnection.connected()) {
@@ -124,7 +152,14 @@ define(function (require, exports, module) {
         }
     }
     
-    function loadDomains() {
+    /**
+     * Load the Inspect HTTP server domain into the Node process. The Node
+     * connection should be opened before attempting to load the Inspect HTTP
+     * server domain.
+     * 
+     * @return jQuery.Promise - Resolves once the domains are successfully loaded.
+     */
+    function loadDomain() {
         console.log("Loading domains...");
         if (nodeConnection.connected()) {
             var modulePath = ExtensionUtils.getModulePath(module, "node/InspectHTTPDomain");
@@ -134,6 +169,15 @@ define(function (require, exports, module) {
         }
     }
     
+    /**
+     * Open a connection to the Inspect HTTP server from the Node process. The
+     * Inspect HTTP domain should be loaded before attempting to open a 
+     * connection to the HTTP server. 
+     * 
+     * @param String root - The filesystem root from which the HTTP server
+     *      should serve files.
+     * @return jQuery.Promise - Resolves with a reference to the HTTP server.
+     */
     function openHTTPServer(root) {
         console.log("Opening server connection...");
         if (nodeConnection.connected()) {
@@ -143,6 +187,15 @@ define(function (require, exports, module) {
         }
     }
     
+    /** 
+     * Close a connection to the HTTP server from the Node process. The
+     * Inspect HTTP domain should be loaded before attempting to close a 
+     * connection to the HTTP server.
+     * 
+     * @param String root - The filesystem root from which the HTTP server
+     *      serves the files.
+     * @return jQuery.Promise - Resolves when the HTTP server is closed.
+     */
     function closeHTTPServer(root) {
         console.log("Closing server connection...");
         if (nodeConnection.connected()) {
@@ -152,11 +205,22 @@ define(function (require, exports, module) {
         }
     }
     
+    /**
+     * Stop an HTTP server at a given filesystem root. This helper function
+     * performs the following steps in order:
+     *  1. Connects to the Node process
+     *  2. Ensures that the Inspect HTTP domain has been loaded
+     *  3. Closes the HTTP server at the given filesystem root.
+     * 
+     * @param String root - The filesystem root from which the HTTP server
+     *      serves the files.
+     * @return jQuery.Promise - Resolves when the HTTP server is closed.
+     */
     function stopServer(root) {
         var deferred = $.Deferred();
         
         connectToNode().done(function () {
-            loadDomains().done(function () {
+            loadDomain().done(function () {
                 closeHTTPServer(root).done(function () {
                     console.log("Closed connection");
                     serverAddress = null;
@@ -174,11 +238,22 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
     
+    /**
+     * Start an HTTP server at a given filesystem root. This helper function
+     * performs the following steps in order:
+     *  1. Connects to the Node process
+     *  2. Loads the Inspect HTTP domain into the Node process
+     *  3. Starts an HTTP server at the given filesystem root.
+     * 
+     * @param String root - The filesystem root from which the HTTP server
+     *      serves the files.
+     * @return jQuery.Promise - Resolves when the HTTP server is open.
+     */
     function startServer(root) {
         var deferred = $.Deferred();
         
         connectToNode().done(function () {
-            loadDomains().done(function () {
+            loadDomain().done(function () {
                 openHTTPServer(root).done(function (address) {
                     console.log("Opened connection: " + JSON.stringify(address));
                     serverAddress = address;
@@ -196,6 +271,12 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
     
+    /**
+     * Disable Inspect at the given filesystem root.
+     * 
+     * @param String root - The filesystem root at which Inspect is enabled.
+     * @return jQuery.Promise - Resolves when Inspect is disabled.
+     */
     function stopInspect(root) {
         var deferred = $.Deferred();
         
@@ -217,6 +298,12 @@ define(function (require, exports, module) {
         return deferred.promise();
     }
     
+    /**
+     * Enable Inspect at the given filesystem root.
+     * 
+     * @param String root - The filesystem root at which Inspect will be enabled.
+     * @return jQuery.Promise - Resolves when Inspect is enabled.
+     */
     function startInspect(root) {
         inspectEnabled = true;
         return startServer(projectRoot).done(function () {
@@ -237,7 +324,11 @@ define(function (require, exports, module) {
             console.log("Failed to enable Inspect");
         });
     }
-        
+    
+    /**
+     * Handle the Inspect follow toggle event by either enabling or disabling
+     * Inspect for the current project root.
+     */
     function onFollowToggle() {
         var $toolbarIcon = $("#inspect-toolbar");
         
@@ -296,6 +387,9 @@ define(function (require, exports, module) {
         }
     }
     
+    /**
+     * Hide the Inspect popover.
+     */
     function hideControls() {
         $("#inspect, .inspectPopoverArrow").fadeOut(50, function () {
             $inspect.css("display", "");
@@ -308,7 +402,10 @@ define(function (require, exports, module) {
             .off(inspectEvent());
         inspectShown = false;
     }
-    
+
+    /**
+     * Show the Inspect popover.
+     */
     function showControls() {
         var $toolbarIcon    = $("#inspect-toolbar"),
             iconOffset      = $toolbarIcon.offset().top,
@@ -329,6 +426,9 @@ define(function (require, exports, module) {
         inspectShown = true;
     }
     
+    /**
+     * Show or hide the Inspect popover depending on its current state.
+     */
     function handleInspectControls() {
         if (inspectShown) {
             hideControls();
@@ -337,6 +437,13 @@ define(function (require, exports, module) {
         }
     }
     
+    /**
+     * Initialize this Inspect administrator. Adds the Inspect popover to the
+     * DOM and connects to the Node process.
+     * 
+     * @return jQuery.Promise - Resolves once the connection to the Node 
+     *      process is open.
+     */
     function initAdmin() {
         var $mainContent = Mustache.render(inspectHtml, Strings);
         $("body").append($mainContent);

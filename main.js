@@ -40,14 +40,17 @@ define(function (require, exports, module) {
         var $toolbarIcon;
         
         ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
-        
+
+        // Add the toolbar icon to the toolbar in a disabled state       
         $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings))
             .addClass("inactive")
             .insertAfter("#toolbar-go-live")
             .attr("title", Strings.INSPECT_BUTTON);
         
+        // Initialize the Inspect administrator
         inspect.initAdmin()
             .done(function () {
+                // Change the state of the toolbar to enabled if successful
                 $toolbarIcon.removeClass("inactive");
                 $toolbarIcon.on("click", inspect.handleInspectControls);
             })
