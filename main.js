@@ -58,4 +58,7 @@ define(function (require, exports, module) {
                 console.log("Inspect initialization failed: " + err);
             });
     });
+    
+    // for unit testing
+    exports.inspect = inspect;
 });

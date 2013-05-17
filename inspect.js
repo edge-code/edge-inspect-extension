@@ -471,4 +471,11 @@ define(function (require, exports, module) {
     exports.initAdmin = initAdmin;
     exports.initDeviceManager = initDeviceManager;
     exports.handleInspectControls = handleInspectControls;
+    
+    // for unit testing
+    exports.nodeConnection = nodeConnection;
+    exports.connectToNode = connectToNode;
+    exports.loadDomain = loadDomain;
+    exports.openHTTPServer = openHTTPServer;
+    exports.closeHTTPServer = closeHTTPServer;
 });
