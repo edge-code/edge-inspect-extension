@@ -63,7 +63,7 @@
                  <div class="submenurow" id="problems"><a href="#" id="problemlink" class="submenutext" data-l10n="problems">{{{INSPECT_problems}}}</a></div>
              </div>
             <div id="devicelist">
-                <div id="waitingdiv"><div id="waitingspinner" class="inspect-spinner"></div><span id="waiting">{{INSPECT_waiting}}</span></div>
+                <div id="waitingdiv"><div id="waitingspinner" class="inspect-spinner"><span class="spinner spin"></span></div><span id="waiting">{{INSPECT_waiting}}</span></div>
                 <div id="syncbrowseoff">{{INSPECT_syncbrowseoff}}</div>
                 <div id="dmerror"><span>{{INSPECT_dmerror}}</span><br /><a href="#" id="getedgeinspectlink">{{INSPECT_getedgeinspect}}</a></div>
                 <div id="dmexpired">{{INSPECT_dmexpired}}</div>
@@ -107,13 +107,15 @@
         </div>
     </div>
     <div id="devicelistfooter"> 
-        <div id="progressdiv" class="inspect-spinner"></div>
+        <div id="progressdiv" class="inspect-spinner"><span class="spinner spin"></span></div>
         <div id="cancelscreenshotdiv">
             <div id="cancelscreenshot">{{INSPECT_cancelscreenshot}}</div>
         </div>
         <div id="completedscreenshotdiv">
             <div id="completedscreenshot">{{INSPECT_completedscreenshot}}</div>
         </div>
+        <a id="screenshotfolder" class="lg-btn" title="{{INSPECT_screenshotfolder_tt}}"></a>
+        <a id="screenshot" class="lg-btn" title="{{INSPECT_screenshot_TT}}"></a>
         <a id="togglechrome" class="lg-btn" title="{{INSPECT_fullscreen_tt}}"></a>
         <a id="forcerefresh" class="lg-btn" title="{{INSPECT_forcerefresh_tt}}"></a>
     </div>

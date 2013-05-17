@@ -326,7 +326,6 @@
     display: inline-block;
     margin-left: 8px;
     position: relative;
-    top: 4px;
 }
 
 .inspect-content #waiting {
@@ -426,6 +425,18 @@
     background-image: -webkit-image-set(url("../img/inspect_exitfullscreen.png") 1x, url("../img/inspect_exitfullscreen@2x.png") 2x);
 }
 
+.inspect-content #screenshot {
+    width: 22px;
+    height: 18px;
+    background: no-repeat -webkit-image-set(url("../img/inspect_camera.png") 1x, url("../img/inspect_camera@2x.png") 2x);
+}
+
+.inspect-content #screenshotfolder {
+    width: 22px;
+    height: 18px;
+    background: no-repeat -webkit-image-set(url("../img/inspect_folder.png") 1x, url("../img/inspect_folder@2x.png") 2x);
+}
+
 .inspect-content #cancelscreenshotdiv, 
 .inspect-content #completedscreenshotdiv, 
 .inspect-content #removepanel, 
@@ -451,11 +462,10 @@
 .inspect-content #cancelscreenshot, 
 .inspect-content #completedscreenshot {
     color: #0083e8;
-    font-size: 11px;
+    font-size: 12px;
     float: left;
-    margin-top: 15px;
+    margin-top: 11px;
     margin-left: 7px;
-    text-shadow: 0px 1px 0px rgba(0,0,0,0.75);
     cursor: pointer;
 }
 
@@ -555,8 +565,6 @@
 .inspect-content .inspect-spinner {
     width: 16px;
     height: 16px;
-    background: no-repeat center center -webkit-image-set(url("../img/inspect_spinner.gif") 1x, url("../img/inspect_spinner@2x.gif") 2x);
-    background-size: 100%;
 }
 
 .inspect-content .devicecancel, .deviceremove {
@@ -584,8 +592,8 @@
 }
 
 .inspect-content #progressdiv {
-    background: no-repeat -webkit-image-set(url("../img/inspect_spinner.gif") 1x, url("../img/inspect_spinner@2x.gif") 2x);
-    background-size: 100%;
+    width: 16px;
+    height: 16px;
 }
 
 .inspect-content .inspect-breadcrumb {
