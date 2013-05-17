@@ -28,7 +28,7 @@ define({
     "GENERATE_INSPECT_CONTROLS"                              : "edgeinspect.handleinspectcontrols",
     
    // for inspect
-    "INSPECT_BUTTON"                                         : "Adobe Edge Inspect CC",
+    "INSPECT_BUTTON"                                         : "Preview on devices using Edge Inspect CC",
     "INSPECT_waiting"                                        : "Waiting for a connection...",
     "INSPECT_syncbrowseoff"                                  : "Synchronized Browsing is off.",
     "INSPECT_dmerror"                                        : "Please start the Edge Inspect CC Application...",
