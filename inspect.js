@@ -191,6 +191,11 @@ define(function (require, exports, module) {
      * Close a connection to the HTTP server from the Node process. The
      * Inspect HTTP domain should be loaded before attempting to close a 
      * connection to the HTTP server.
+     *
+     * Note that it can take a very long time for this promise to resolve.
+     * This is because the close event is not emitted by the Node HTTP server
+     * until all clients have disconnected. And because of HTTP Keep-Alive,
+     * this can take a long time.
      * 
      * @param String root - The filesystem root from which the HTTP server
      *      serves the files.
@@ -211,6 +216,8 @@ define(function (require, exports, module) {
      *  1. Connects to the Node process
      *  2. Ensures that the Inspect HTTP domain has been loaded
      *  3. Closes the HTTP server at the given filesystem root.
+     * Note that it can take a very long time for this promise to resolve. See
+     * the comment at closeHTTPServer above.
      * 
      * @param String root - The filesystem root from which the HTTP server
      *      serves the files.
@@ -221,11 +228,12 @@ define(function (require, exports, module) {
         
         connectToNode().done(function () {
             loadDomain().done(function () {
-                closeHTTPServer(root).done(function () {
-                    console.log("Closed connection");
+                closeHTTPServer(root).done(function (path) {
+                    console.log("Closed connection: " + path);
                     serverAddress = null;
                     deferred.resolve();
-                }).fail(function () {
+                }).fail(function (path) {
+                    console.log("Failed to close connection: " + path);
                     deferred.reject();
                 });
             }).fail(function () {
@@ -272,7 +280,9 @@ define(function (require, exports, module) {
     }
     
     /**
-     * Disable Inspect at the given filesystem root.
+     * Disable Inspect at the given filesystem root. Note that it can take a
+     * very long time for this promise to resolve. See the comment at 
+     * closeHTTPServer above.
      * 
      * @param String root - The filesystem root at which Inspect is enabled.
      * @return jQuery.Promise - Resolves when Inspect is disabled.
@@ -288,6 +298,8 @@ define(function (require, exports, module) {
         inspectPromise.done(function () {
             stopServer(root).done(function () {
                 deferred.resolve();
+            }).fail(function () {
+                deferred.reject();
             });
         }).fail(function () {
             inspectEnabled = true;
@@ -375,12 +387,13 @@ define(function (require, exports, module) {
             }
         } else {
             if (inspectEnabled) {
-                stopInspect(projectRoot).done(function () {
-                    $(ProjectManager).off(inspectEvent());
-                    $(DocumentManager).off(inspectEvent());
-                    $(window).off(inspectEvent());
-                    $toolbarIcon.removeClass("active");
-                });
+                stopInspect(projectRoot);
+                // Note that we don't wait for for this to finish because
+                // stopping the underlying HTTP server can take a very long time
+                $(ProjectManager).off(inspectEvent());
+                $(DocumentManager).off(inspectEvent());
+                $(window).off(inspectEvent());
+                $toolbarIcon.removeClass("active");
             } else {
                 console.log("Toggle state switched off but Inspect is disabled");
             }

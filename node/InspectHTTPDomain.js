@@ -202,10 +202,12 @@ maxerr: 50, node: true */
         if (_servers[pathKey]) {
             var serverToClose = _servers[pathKey].server;
             delete _servers[pathKey];
-            serverToClose.close();
-            return true;
+            serverToClose.close(function () {
+                cba(null, path);
+            });
+        } else {
+            cba(path);
         }
-        return false;
     }
 
     /**
@@ -244,7 +246,7 @@ maxerr: 50, node: true */
             "inspectHttpServer",
             "closeServer",
             inspectDomain.bind(_cmdCloseServer),
-            false,
+            true,
             "Closes the server for the given path.",
             [{
                 name: "path",
