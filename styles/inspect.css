@@ -437,6 +437,10 @@
     background: no-repeat -webkit-image-set(url("../img/inspect_folder.png") 1x, url("../img/inspect_folder@2x.png") 2x);
 }
 
+.inspect-content #devicelistfooter {
+     opacity: 0.6;
+}
+
 .inspect-content #cancelscreenshotdiv, 
 .inspect-content #completedscreenshotdiv, 
 .inspect-content #removepanel, 
