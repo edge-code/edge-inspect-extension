@@ -411,8 +411,7 @@ define(function (require, exports, module) {
             $inspectPopoverArrow.removeClass("visible");
         });
         
-        $(".content, .sidebar")
-            .off(inspectEvent());
+        $("body").off(inspectEvent());
         inspectShown = false;
     }
 
@@ -434,8 +433,15 @@ define(function (require, exports, module) {
         $inspect.addClass("visible");
         $inspectPopoverArrow.addClass("visible");
         
-        $(".content, .sidebar")
-            .on(inspectEvent("mousedown", "keyup"), hideControls);
+        $("body")
+			.on(inspectEvent("keyup"), hideControls)
+            .on(inspectEvent("mousedown"), function (event) {
+                if (!($inspect.find(event.target).length ||
+                     $inspectPopoverArrow.find(event.target).length ||
+                     $toolbarIcon.find(event.target).length)) {
+                    hideControls();
+                }
+            });
         inspectShown = true;
     }
     
