@@ -434,11 +434,11 @@ define(function (require, exports, module) {
         $inspectPopoverArrow.addClass("visible");
         
         $("body")
-			.on(inspectEvent("keyup"), hideControls)
+            .on(inspectEvent("keyup"), hideControls)
             .on(inspectEvent("mousedown"), function (event) {
                 if (!($inspect.find(event.target).length ||
-                     $inspectPopoverArrow.find(event.target).length ||
-                     $toolbarIcon.find(event.target).length)) {
+                        $inspectPopoverArrow.find(event.target).length ||
+                        $toolbarIcon.find(event.target).length)) {
                     hideControls();
                 }
             });
