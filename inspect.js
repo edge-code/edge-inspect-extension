@@ -80,7 +80,6 @@ define(function (require, exports, module) {
      * Initialize the connection to the Inspect device manager.
      */
     function initDeviceManager() {
-        console.log("Initializing device manager...");
         SkyLabView.initialize();
         SkyLabPopup.initInspect($inspect, Strings);
         SkyLabPopup.startListening();
@@ -95,7 +94,6 @@ define(function (require, exports, module) {
      */
     function refreshCurrentURL() {
         if (currentURL) {
-            console.log("Refreshing URL: " + currentURL);
             SkyLabController.followUrl(currentURL, "false");
         }
     }
@@ -126,7 +124,6 @@ define(function (require, exports, module) {
                     currentURL = "http://" + serverAddress.address + ":" +
                         serverAddress.port + relativePath;
                     
-                    console.log("New URL: " + currentURL);
                     return true;
                 }
             } else {
@@ -144,7 +141,6 @@ define(function (require, exports, module) {
      * @return jQuery.Promise - Resolves when the connection is open.
      */
     function connectToNode() {
-        console.log("Connecting to node...");
         if (nodeConnection.connected()) {
             return $.Deferred().resolve().promise();
         } else {
@@ -160,7 +156,6 @@ define(function (require, exports, module) {
      * @return jQuery.Promise - Resolves once the domains are successfully loaded.
      */
     function loadDomain() {
-        console.log("Loading domains...");
         if (nodeConnection.connected()) {
             var modulePath = ExtensionUtils.getModulePath(module, "node/InspectHTTPDomain");
             return nodeConnection.loadDomains([modulePath], true);
@@ -179,7 +174,6 @@ define(function (require, exports, module) {
      * @return jQuery.Promise - Resolves with a reference to the HTTP server.
      */
     function openHTTPServer(root) {
-        console.log("Opening server connection...");
         if (nodeConnection.connected()) {
             return nodeConnection.domains.inspectHttpServer.getServer(root);
         } else {
@@ -202,7 +196,6 @@ define(function (require, exports, module) {
      * @return jQuery.Promise - Resolves when the HTTP server is closed.
      */
     function closeHTTPServer(root) {
-        console.log("Closing server connection...");
         if (nodeConnection.connected()) {
             return nodeConnection.domains.inspectHttpServer.closeServer(root);
         } else {
@@ -229,11 +222,9 @@ define(function (require, exports, module) {
         connectToNode().done(function () {
             loadDomain().done(function () {
                 closeHTTPServer(root).done(function (path) {
-                    console.log("Closed connection: " + path);
                     serverAddress = null;
                     deferred.resolve();
                 }).fail(function (path) {
-                    console.log("Failed to close connection: " + path);
                     deferred.reject();
                 });
             }).fail(function () {
@@ -263,7 +254,6 @@ define(function (require, exports, module) {
         connectToNode().done(function () {
             loadDomain().done(function () {
                 openHTTPServer(root).done(function (address) {
-                    console.log("Opened connection: " + JSON.stringify(address));
                     serverAddress = address;
                     deferred.resolve();
                 }).fail(function () {
@@ -304,7 +294,6 @@ define(function (require, exports, module) {
         }).fail(function () {
             inspectEnabled = true;
             deferred.reject();
-            console.log("Failed to disable Inspect");
         });
         
         return deferred.promise();
@@ -322,9 +311,11 @@ define(function (require, exports, module) {
             if (updateCurrentURL()) {
                 refreshCurrentURL();
             }
-            
+
+            // This event is fired if new domains are added to the node connection,
+            // which happens, e.g., if node is restarted. To be on the safe side, 
+            // we restart everything when this happens.
             $(nodeConnection).on(inspectEvent("base.newDomains"), function () {
-                console.log("New domains!");
                 if (inspectEnabled) {
                     stopInspect(projectRoot);
                     inspectPromise = startInspect(projectRoot);
@@ -333,7 +324,6 @@ define(function (require, exports, module) {
             
         }).fail(function () {
             inspectEnabled = false;
-            console.log("Failed to enable Inspect");
         });
     }
     
@@ -351,7 +341,6 @@ define(function (require, exports, module) {
                 inspectPromise.done(function () {
                     $(ProjectManager)
                         .on(inspectEvent("beforeProjectClose", "beforeAppClose"), function () {
-                            console.log("Changing project...");
                             if (inspectEnabled) {
                                 stopInspect(projectRoot);
                                 projectRoot = null;
@@ -360,7 +349,6 @@ define(function (require, exports, module) {
                         .on(inspectEvent("projectOpen"), function (event, newProjectRoot) {
                             if (!inspectEnabled) {
                                 projectRoot = newProjectRoot.fullPath;
-                                console.log("New project: " + projectRoot);
                                 inspectPromise = startInspect(projectRoot);
                             }
                         });
@@ -382,8 +370,6 @@ define(function (require, exports, module) {
                 }).fail(function () {
                     inspectEnabled = false;
                 });
-            } else {
-                console.log("Toggle state switched on but Inspect is enabled");
             }
         } else {
             if (inspectEnabled) {
@@ -394,8 +380,6 @@ define(function (require, exports, module) {
                 $(DocumentManager).off(inspectEvent());
                 $(window).off(inspectEvent());
                 $toolbarIcon.removeClass("active");
-            } else {
-                console.log("Toggle state switched off but Inspect is disabled");
             }
         }
     }

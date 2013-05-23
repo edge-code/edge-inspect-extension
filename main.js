@@ -55,7 +55,7 @@ define(function (require, exports, module) {
                 $toolbarIcon.on("click", inspect.handleInspectControls);
             })
             .fail(function (err) {
-                console.log("Inspect initialization failed: " + err);
+                console.log("Edge Inspect initialization failed: " + err);
             });
     });
     
