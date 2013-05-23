@@ -393,6 +393,7 @@ define(function (require, exports, module) {
             $inspect.removeClass("visible");
             $inspectPopoverArrow.css("display", "");
             $inspectPopoverArrow.removeClass("visible");
+            $(SkyLabController).trigger("close.popup");
         });
         
         $(".content, .sidebar")
