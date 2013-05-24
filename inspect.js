@@ -409,6 +409,14 @@ define(function (require, exports, module) {
             inspectTop      = iconOffset - 20,
             arrowTop        = inspectTop + 22;
         
+        function handleInput(event) {
+            if (!($inspect.find(event.target).length ||
+                    $inspectPopoverArrow.find(event.target).length ||
+                    $toolbarIcon.find(event.target).length)) {
+                hideControls();
+            }
+        }
+        
         if (!deviceManagerInitialized) {
             initDeviceManager();
         }
@@ -418,15 +426,7 @@ define(function (require, exports, module) {
         $inspect.addClass("visible");
         $inspectPopoverArrow.addClass("visible");
         
-        $("body")
-            .on(inspectEvent("keyup"), hideControls)
-            .on(inspectEvent("mousedown"), function (event) {
-                if (!($inspect.find(event.target).length ||
-                        $inspectPopoverArrow.find(event.target).length ||
-                        $toolbarIcon.find(event.target).length)) {
-                    hideControls();
-                }
-            });
+        $("body").on(inspectEvent("keyup", "mousedown"), handleInput);
         inspectShown = true;
     }
     
