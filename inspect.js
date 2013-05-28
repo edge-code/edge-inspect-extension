@@ -455,6 +455,11 @@ define(function (require, exports, module) {
         $inspect = $("#inspect");
         $inspectPopoverArrow = $(".inspectPopoverArrow");
         $inspect.on("Inspect:followtoggle", onFollowToggle);
+        $inspect.on("Inspect:refreshCurrentUrl", function () {
+            if (inspectEnabled) {
+                refreshCurrentURL();
+            }
+        });
         
         return nodeConnection.connect(true);
     }
