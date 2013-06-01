@@ -37,9 +37,21 @@ define(function (require, exports, module) {
         ExtensionUtils          = brackets.getModule("utils/ExtensionUtils");
     
     AppInit.appReady(function () {
-        var $toolbarIcon;
+        var $toolbarIcon,
+            root = require.toUrl('./');
         
         ExtensionUtils.loadStyleSheet(module, "styles/inspect.css");
+
+        function makeHiDPIURLBackground(loDPI, hiDPI) {
+            return "background: no-repeat -webkit-image-set(url('" + root +
+                "img/" + loDPI + "') 1x, url('" + root + "img/" + hiDPI + "') 2x);";
+        }
+
+        ExtensionUtils.addEmbeddedStyleSheet(".inspect-content .toggleon {" +
+            makeHiDPIURLBackground(Strings.TOGGLE_ON_IMG, Strings.TOGGLE_ON_IMG_HIDPI) + "}");
+        
+        ExtensionUtils.addEmbeddedStyleSheet(".inspect-content .toggleoff {" +
+            makeHiDPIURLBackground(Strings.TOGGLE_OFF_IMG, Strings.TOGGLE_OFF_IMG_HIDPI) + "}");
 
         // Add the toolbar icon to the toolbar in a disabled state       
         $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings))
