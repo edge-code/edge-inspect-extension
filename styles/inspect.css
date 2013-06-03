@@ -493,6 +493,14 @@
     position: relative;
 }*/
 
+.inspect-content #shadmessage a.md-btn {
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    margin: -9px 3px -9px 0;
+}
+
 .inspect-content #shadmessage a, 
 .inspect-content #dmerror a {
   color: #0083e8;
