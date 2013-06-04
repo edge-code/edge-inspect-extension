@@ -26,6 +26,10 @@
 
 define({
     "GENERATE_INSPECT_CONTROLS"                              : "edgeinspect.handleinspectcontrols",
+    "TOGGLE_ON_IMG"                                          : "slideswitch_on.png",
+    "TOGGLE_ON_IMG_HIDPI"                                    : "slideswitch_on@2x.png",
+    "TOGGLE_OFF_IMG"                                         : "slideswitch_off.png",
+    "TOGGLE_OFF_IMG_HIDPI"                                   : "slideswitch_off@2x.png",
     
    // for inspect
     "INSPECT_BUTTON"                                         : "Preview on devices using Edge Inspect CC",

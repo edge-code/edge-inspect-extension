@@ -493,6 +493,14 @@
     position: relative;
 }*/
 
+.inspect-content #shadmessage a.md-btn {
+    display: inline-block;
+    position: absolute;
+    right: 0px;
+    top: 50%;
+    margin: -9px 3px -9px 0;
+}
+
 .inspect-content #shadmessage a, 
 .inspect-content #dmerror a {
   color: #0083e8;
@@ -589,11 +597,11 @@
 /* Images and such ------------------------------------------------------------------------------- */
 
 .inspect-content .toggleon {
-    background: no-repeat -webkit-image-set(url("../img/slideswitch_on.png") 1x, url("../img/slideswitch_on@2x.png") 2x);
+    /* background URL is translated and instantiated manually */
 }
 
 .inspect-content .toggleoff {
-    background: no-repeat -webkit-image-set(url("../img/slideswitch_off.png") 1x, url("../img/slideswitch_off@2x.png") 2x);
+    /* background URL is translated and instantiated manually */
 }
 
 .inspect-content #progressdiv {
