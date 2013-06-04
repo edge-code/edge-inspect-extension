@@ -26,10 +26,10 @@
 
 define({
 	"GENERATE_INSPECT_CONTROLS": "edgeinspect.handleinspectcontrols",
-    "TOGGLE_ON_IMG"                                          : "slideswitch_on_localized.png",
-    "TOGGLE_ON_IMG_HIDPI"                                    : "slideswitch_on_localized@2x.png",
-    "TOGGLE_OFF_IMG"                                         : "slideswitch_off_localized.png",
-    "TOGGLE_OFF_IMG_HIDPI"                                   : "slideswitch_off_localized@2x.png",
+	"TOGGLE_ON_IMG": "[6973479] !é=slideswitch_on.png=!",
+	"TOGGLE_ON_IMG_HIDPI": "[6973480] !é=slideswitch_on@2x.png=!",
+	"TOGGLE_OFF_IMG": "[6973477] !é=slideswitch_off.png=!",
+	"TOGGLE_OFF_IMG_HIDPI": "[6973478] !é=slideswitch_off@2x.png=!",
     
    // for inspect
 	"INSPECT_BUTTON": "Preview on devices using Edge Inspect CC",
