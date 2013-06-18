@@ -410,9 +410,13 @@ define(function (require, exports, module) {
             arrowTop        = inspectTop + 22;
         
         function handleInput(event) {
-            if (!($inspect.find(event.target).length ||
-                    $inspectPopoverArrow.find(event.target).length ||
-                    $toolbarIcon.find(event.target).length)) {
+            function inTree($jqObj) {
+                return $jqObj[0] === event.target ||
+                    $jqObj.find(event.target).length > 0;
+            }
+            if (!inTree($inspect) &&
+                    !inTree($inspectPopoverArrow) &&
+                    !inTree($toolbarIcon)) {
                 hideControls();
             }
         }
