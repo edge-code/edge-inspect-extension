@@ -1,0 +1,16 @@
+Copyright 2013 Adobe Systems Incorporated
+
+This Software is licensed under the Apache 2 (see LICENSE file).
+
+The code available on this site is governed by the Apache 2.0 license. 
+However, in order to use this API, you or your end users are required 
+to have a valid license to Adobe Edge Inspect software. Use of Adobe 
+Edge Inspect or any other software is governed under separate terms 
+and licenses provided with such software. Nothing in this project grant 
+rights to any other software or service. 
+
+This software uses the following third party libraries that may have
+licenses differing from that of the software itself. You can find the
+libraries and their respective licenses below.
+
+Crypto-JS v2.5.3 - http://code.google.com/p/crypto-js/wiki/License
