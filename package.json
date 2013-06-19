@@ -1,12 +1,12 @@
 {
-    "name": "edge-code-inspect",
-    "description": "Edge Inspect extension for Edge Code",
+    "name": "edge-inspect-extension",
+    "description": "Edge Inspect extension",
     "version": "0.1.0",
     "keywords": [".css", ".html", ".js"],
-    "homepage": "https://git.corp.adobe.com/edge/edge-code-inspect",
-    "bugs": "https://git.corp.adobe.com/edge/edge-code-inspect/issues",
+    "homepage": "https://github.com/edge-code/edge-inspect-extension",
+    "bugs": "https://github.com/edge-code/edge-inspect-extension/issues",
     "repository" : { 
         "type" : "git",
-        "url" : "https://git.corp.adobe.com/edge/edge-code-inspect.git"
+        "url" : "https://github.com/edge-code/edge-inspect-extension.git"
     }
 }

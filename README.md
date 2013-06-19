@@ -5,7 +5,7 @@ This extension lets you preview content from Brackets on your devices using Edge
 
 ##Prerequisites
 
-*[Edge Inspect CC](http://html.adobe.com/edge/inspect/) installed and running
+* [Edge Inspect CC](http://html.adobe.com/edge/inspect/) installed and running
 
 ## Installation
 
