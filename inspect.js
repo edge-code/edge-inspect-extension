@@ -450,7 +450,7 @@ define(function (require, exports, module) {
         howtoDiagramHiDPIURL = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}", {Strings : Strings, Paths : Paths});
     
     // show how-to dialog with" Getting Started" instructions    
-    function _showHowtoDialog() {
+    function showHowtoDialog() {
         var dlg = Dialogs.showModalDialogUsingTemplate(inspectHowtoDialogTemplate);
         dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
         
@@ -463,7 +463,7 @@ define(function (require, exports, module) {
     function handleInspectControls() {
         if (firstRun) {
             // on first click, display the Getting Started dialog
-            _showHowtoDialog();
+            showHowtoDialog();
             firstRun = false;
         } else {
             if (inspectShown) {
@@ -500,6 +500,7 @@ define(function (require, exports, module) {
     exports.initAdmin = initAdmin;
     exports.initDeviceManager = initDeviceManager;
     exports.handleInspectControls = handleInspectControls;
+    exports.showHowtoDialog = showHowtoDialog;
     
     // for unit testing
     exports.nodeConnection = nodeConnection;

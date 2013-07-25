@@ -108,5 +108,6 @@ define({
     "HOWTO_INSTRUCTIONS_4"                                   : "Use a manual connection if you can't find the computer to connect.  On the device, tap the `+` button to perform a Manual Connect. A list of IP Addresses or Host Names associated with your computer will be displayed in the Inspect Extension window. Insert the IP Address or Host Name into the text field on the device.",
     "HOWTO_INSTRUCTIONS_5"                                   : "Once connected, your computer will display the page for inspection on your device.  Edge Inspect will also prevent the screen from dimming or going to sleep.",
     "HOWTO_DIAGRAM_IMAGE"                                    : "img/step-connecting.png",
-    "HOWTO_DIAGRAM_IMAGE_HIDPI"                              : "img/step-connecting@2x.png"
+    "HOWTO_DIAGRAM_IMAGE_HIDPI"                              : "img/step-connecting@2x.png",
+    "INSPECT_showhowto"                                      : "Getting started..."
 });
