@@ -98,5 +98,15 @@ define({
     "INSPECT_gettingstartedconnectingmanualconnectionp1"     : "If you can't find the computer you want to connect to, tap the \"+\" button to perform a Manual Connect. A list of IP Addresses associated with your computer is located at the bottom of the Chrome Extension. Insert the IP Address into the text field on the device.",
     "INSPECT_gettingstartedconnectingmanualconnectionp2"     : "When a device is connected, Edge Inspect CC will prevent the screen from dimming or going to sleep.",
     "INSPECT_gettingstartedremoteinspectionheader"           : "3. Inspecting &amp; debugging the page on your device",
-    "INSPECT_gettingstartedremoteinspection"                 : " In the Chrome Extension, click on the \"&lt; &gt;\" button next to the device you'd like to inspect or debug and the Developer Tools window will open; you can use remote inspection on one device at a time."
+    "INSPECT_gettingstartedremoteinspection"                 : " In the Chrome Extension, click on the \"&lt; &gt;\" button next to the device you'd like to inspect or debug and the Developer Tools window will open; you can use remote inspection on one device at a time.",
+
+    "PRODUCT_NAME"                                           : "Edge Inspect",
+    "DIALOG_DONE"                                            : "Done",
+    "HOWTO_INSTRUCTIONS_1"                                   : "Adobe® Edge Inspect is for web designers and developers targeting mobile browsers. After installing Edge Inspect, you will be able to pair devices, have them browse in sync with your computer, perform remote inspection/debugging and see HTML/CSS/JavaScript changes instantly on your device.",
+    "HOWTO_INSTRUCTIONS_2"                                   : "To get started, first ensure your computer and your devices are on the same network.  For auto-discovery, they must be on the same subnet.  Otherwise, try a manual connection.",
+    "HOWTO_INSTRUCTIONS_3"                                   : "In auto-discovery, the device running Edge Inspect will look for computers also running Edge Inspect. Tap the computer you would like to connect to. Enter the passcode into the Inspect Extension. This creates a wireless connection between your computer and device.",
+    "HOWTO_INSTRUCTIONS_4"                                   : "Use a manual connection if you can't find the computer to connect.  On the device, tap the `+` button to perform a Manual Connect. A list of IP Addresses or Host Names associated with your computer will be displayed in the Inspect Extension window. Insert the IP Address or Host Name into the text field on the device.",
+    "HOWTO_INSTRUCTIONS_5"                                   : "Once connected, your computer will display the page for inspection on your device.  Edge Inspect will also prevent the screen from dimming or going to sleep.",
+    "HOWTO_DIAGRAM_IMAGE"                                    : "img/step-connecting.png",
+    "HOWTO_DIAGRAM_IMAGE_HIDPI"                              : "img/step-connecting@2x.png"
 });

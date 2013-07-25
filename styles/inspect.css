@@ -615,6 +615,30 @@
 
 
 /**
+ *  Inspect-specific Dialog Styling
+ */
+.inspect-howto-dialog ol {
+    font-size: 1.1em;
+}
+.inspect-howto-dialog li {
+    margin-bottom: .4em;
+    list-style-position: outside;
+}
+.inspect-howto-dialog .dialog-message {
+    margin-bottom: 0px;
+}
+.inspect-howto-diagram {
+    width: 533px;
+    height: 240px;
+    margin: 15px 0px 15px 25px;
+    background-repeat: no-repeat;
+}
+.inspect-howto-dialog .modal-body {
+    max-height: none;
+}
+
+
+/**
  *  Brackets Toolbar Icon Styling
  */
 #inspect-toolbar {

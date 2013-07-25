@@ -39,6 +39,9 @@ define(function (require, exports, module) {
         SkyLabPopup         = require("lib/inspect/skylabpopup"),
         SkyLabView          = require("lib/inspect/skylabview"),
         Strings             = require("strings");
+    
+    var Dialogs             = brackets.getModule("widgets/Dialogs"),
+        inspectHowtoDialogHtml  = require("text!htmlContent/inspect-howto-dialog.html");
         
     var $inspect,
         $inspectPopoverArrow,
@@ -49,7 +52,8 @@ define(function (require, exports, module) {
         serverAddress,
         currentURL = null,
         nodeConnection = new NodeConnection(),
-        inspectPromise;
+        inspectPromise,
+        firstRun = true;
     
     /**
      * For a given event name, build a new event name from within the Inspect
@@ -434,14 +438,39 @@ define(function (require, exports, module) {
         inspectShown = true;
     }
     
+    var Paths = {
+        ROOT : require.toUrl('./')
+    };
+    
+    // Rendered templates
+    var inspectHowtoDialogTemplate = Mustache.render(inspectHowtoDialogHtml, {Strings : Strings, Paths : Paths});
+    
+    // work around a URL jQuery URL escaping issue
+    var howtoDiagramURL      = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}", {Strings : Strings, Paths : Paths}),
+        howtoDiagramHiDPIURL = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}", {Strings : Strings, Paths : Paths});
+    
+    // show how-to dialog with" Getting Started" instructions    
+    function _showHowtoDialog() {
+        var dlg = Dialogs.showModalDialogUsingTemplate(inspectHowtoDialogTemplate);
+        dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
+        
+        $(".inspect-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
+    }
+    
     /**
      * Show or hide the Inspect popover depending on its current state.
      */
     function handleInspectControls() {
-        if (inspectShown) {
-            hideControls();
+        if (firstRun) {
+            // on first click, display the Getting Started dialog
+            _showHowtoDialog();
+            firstRun = false;
         } else {
-            showControls();
+            if (inspectShown) {
+                hideControls();
+            } else {
+                showControls();
+            }
         }
     }
     
