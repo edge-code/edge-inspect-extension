@@ -102,12 +102,11 @@ define({
 
     "PRODUCT_NAME"                                           : "Edge Inspect",
     "DIALOG_DONE"                                            : "Done",
-    "HOWTO_INSTRUCTIONS_1"                                   : "Adobe® Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript.",
-    "HOWTO_INSTRUCTIONS_2"                                   : "To get started, first ensure your computer and your devices are on the same network.  For auto-discovery, they must be on the same subnet.  Otherwise, try a manual connection.",
-    "HOWTO_INSTRUCTIONS_3"                                   : "In auto-discovery, the device running Edge Inspect will look for computers also running Edge Inspect. Tap the computer you would like to connect to. Enter the passcode into the Inspect Extension. This creates a wireless connection between your computer and device.",
-    "HOWTO_INSTRUCTIONS_4"                                   : "Use a manual connection if you can't find the computer to connect.  On the device, tap the `+` button to perform a Manual Connect. A list of IP Addresses or Host Names associated with your computer will be displayed in the Inspect Extension window. Insert the IP Address or Host Name into the text field on the device.",
-    "HOWTO_INSTRUCTIONS_5"                                   : "Once connected, your computer will display the page for inspection on your device.  Edge Inspect will also prevent the screen from dimming or going to sleep.",
-    "HOWTO_DIAGRAM_IMAGE"                                    : "img/step-connecting.png",
-    "HOWTO_DIAGRAM_IMAGE_HIDPI"                              : "img/step-connecting@2x.png",
+    "HOWTO_INTRO"                                            : "Adobe® Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript.",
+    "HOWTO_INSTRUCTIONS_1"                                   : "Install Edge Inspect on your device, and check that your device and computer are on the same network.  Both must be on the same subnet for auto-discovery.",
+    "HOWTO_INSTRUCTIONS_2"                                   : "If the device can't find your computer, use manual connection (+ button on the device).  Use your computer's IP Address or Host Name as displayed on the Edge Inspect extension, as shown above.",
+    "HOWTO_INSTRUCTIONS_3"                                   : "Once connected, Edge Inspect will preview the page on your device.  It will also keep the screen from dimming or going to sleep during preview.",
+    "HOWTO_DIAGRAM_IMAGE"                                    : "img/EdgeInspectInstructionImage.png",
+    "HOWTO_DIAGRAM_IMAGE_HIDPI"                              : "img/EdgeInspectInstructionImage@2x.png",
     "INSPECT_showhowto"                                      : "Getting started..."
 });

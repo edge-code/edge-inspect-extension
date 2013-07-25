@@ -617,13 +617,7 @@
 /**
  *  Inspect-specific Dialog Styling
  */
-.inspect-howto-dialog .inspect-howto-lilist1 {
-    font-size: 14px;
-    margin-bottom: .4em;
-}
-.inspect-howto-dialog .inspect-howto-lilist2 {
-    list-style-type: lower-alpha;
-    list-style-position: outside;
+.inspect-howto-dialog li {
     font-size: 14px;
     margin-bottom: .4em;
 }
@@ -631,8 +625,8 @@
     margin-bottom: 0px;
 }
 .inspect-howto-diagram {
-    width: 533px;
-    height: 240px;
+    width: 479px;
+    height: 195px;
     margin: 15px 0px 15px 25px;
     background-repeat: no-repeat;
 }
