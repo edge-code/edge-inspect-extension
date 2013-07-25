@@ -617,18 +617,24 @@
 /**
  *  Inspect-specific Dialog Styling
  */
-.inspect-howto-dialog li {
-    font-size: 14px;
-    margin-bottom: .4em;
-}
 .inspect-howto-dialog .dialog-message {
     margin-bottom: 0px;
+}
+.inspect-howto-dialog li {
+    margin-bottom: .4em;
+    line-height: 20px;
 }
 .inspect-howto-diagram {
     width: 479px;
     height: 195px;
     margin: 15px 0px 15px 25px;
     background-repeat: no-repeat;
+}
+.inspect-howto-dialog .inspect-needhelp {
+  position: relative;
+  float: left;
+  top: 7px;
+  left: 3px;
 }
 
 
