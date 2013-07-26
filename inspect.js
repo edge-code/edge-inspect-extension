@@ -32,7 +32,8 @@ define(function (require, exports, module) {
         LanguageManager     = brackets.getModule("language/LanguageManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         NodeConnection      = brackets.getModule("utils/NodeConnection"),
-        ProjectManager      = brackets.getModule("project/ProjectManager");
+        ProjectManager      = brackets.getModule("project/ProjectManager"),
+        PreferencesManager  = brackets.getModule("preferences/PreferencesManager");
     
     var inspectHtml         = require("text!htmlContent/inspect.html"),
         SkyLabController    = require("lib/inspect/skylab").SkyLabController,
@@ -52,8 +53,11 @@ define(function (require, exports, module) {
         serverAddress,
         currentURL = null,
         nodeConnection = new NodeConnection(),
-        inspectPromise,
-        firstRun = true;
+        inspectPromise;
+    
+    var prefs = PreferencesManager.getPreferenceStorage(module);
+    //TODO: Remove preferences migration code
+    PreferencesManager.handleClientIdChange(prefs, "com.adobe.brackets.edge-inspect-extension");
     
     /**
      * For a given event name, build a new event name from within the Inspect
@@ -461,10 +465,10 @@ define(function (require, exports, module) {
      * Show or hide the Inspect popover depending on its current state.
      */
     function handleInspectControls() {
-        if (firstRun) {
-            // on first click, display the Getting Started dialog
+        if (!prefs.getValue("hasShownGettingStarted")) {
+            // only display the Getting Started dialog once
             showHowtoDialog();
-            firstRun = false;
+            prefs.setValue("hasShownGettingStarted", true);
         } else {
             if (inspectShown) {
                 hideControls();
