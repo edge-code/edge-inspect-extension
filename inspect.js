@@ -46,6 +46,8 @@ define(function (require, exports, module) {
         
     var $inspect,
         $inspectPopoverArrow,
+        $toolbarIcon,
+        $howToDialog,
         inspectEnabled = false,
         inspectShown = false,
         deviceManagerInitialized = false,
@@ -409,25 +411,29 @@ define(function (require, exports, module) {
     }
 
     /**
+     * Handle input when the popover is displayed.  Specifically, close the popover if the user clicks outside of the window.
+     */
+    function handleInput(event) {
+        function inTree($jqObj) {
+            return $jqObj[0] === event.target ||
+                $jqObj.find(event.target).length > 0;
+        }
+        if (!inTree($inspect) &&
+                !inTree($inspectPopoverArrow) &&
+                !inTree($toolbarIcon)) {
+            hideControls();
+        }
+    }
+    
+    /**
      * Show the Inspect popover.
      */
     function showControls() {
-        var $toolbarIcon    = $("#inspect-toolbar"),
-            iconOffset      = $toolbarIcon.offset().top,
+        $toolbarIcon = $("#inspect-toolbar");
+        
+        var iconOffset      = $toolbarIcon.offset().top,
             inspectTop      = iconOffset - 20,
             arrowTop        = inspectTop + 22;
-        
-        function handleInput(event) {
-            function inTree($jqObj) {
-                return $jqObj[0] === event.target ||
-                    $jqObj.find(event.target).length > 0;
-            }
-            if (!inTree($inspect) &&
-                    !inTree($inspectPopoverArrow) &&
-                    !inTree($toolbarIcon)) {
-                hideControls();
-            }
-        }
         
         if (!deviceManagerInitialized) {
             initDeviceManager();
@@ -453,10 +459,30 @@ define(function (require, exports, module) {
     var howtoDiagramURL      = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}", {Strings : Strings, Paths : Paths}),
         howtoDiagramHiDPIURL = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}", {Strings : Strings, Paths : Paths});
     
-    // show how-to dialog with" Getting Started" instructions    
-    function showHowtoDialog() {
-        var dlg = Dialogs.showModalDialogUsingTemplate(inspectHowtoDialogTemplate);
-        dlg.getElement().find(".close").on("click", dlg.close.bind(dlg));
+    /**
+     * returns true if the Getting Started dialog is being displayed
+     */
+    function isShowingHowToDialog() {
+        return ($howToDialog !== undefined) ? true : false;
+    }
+    
+    /**
+     * show how-to dialog with" Getting Started" instructions    
+     */
+    function showHowToDialog() {
+        if (isShowingHowToDialog())
+            return; // don't allow multiple instances
+        
+        // temporarily disable input handling on the popup
+        $("body").off(inspectEvent());
+        
+        $howToDialog = Dialogs.showModalDialogUsingTemplate(inspectHowtoDialogTemplate);
+        $howToDialog.getElement().find(".close").on("click", $howToDialog.close.bind($howToDialog));
+        $howToDialog.done(function () {
+            // when the dialog closes, then restore the input handler to the popup
+            $("body").on(inspectEvent("keyup", "mousedown"), handleInput);
+            $howToDialog = undefined;
+        });
         
         $(".inspect-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
     }
@@ -465,16 +491,17 @@ define(function (require, exports, module) {
      * Show or hide the Inspect popover depending on its current state.
      */
     function handleInspectControls() {
-        if (!prefs.getValue("hasShownGettingStarted")) {
-            // only display the Getting Started dialog once
-            showHowtoDialog();
-            prefs.setValue("hasShownGettingStarted", true);
+        if (inspectShown) {
+            hideControls();
         } else {
-            if (inspectShown) {
-                hideControls();
-            } else {
-                showControls();
-            }
+            showControls();
+        }
+        
+        // if this is the first time that the Inspect extension has been launched,
+        //    then show the Getting Started dialog.
+        if (!prefs.getValue("hasShownGettingStarted")) {
+            showHowToDialog();
+            prefs.setValue("hasShownGettingStarted", true);
         }
     }
     
@@ -504,7 +531,8 @@ define(function (require, exports, module) {
     exports.initAdmin = initAdmin;
     exports.initDeviceManager = initDeviceManager;
     exports.handleInspectControls = handleInspectControls;
-    exports.showHowtoDialog = showHowtoDialog;
+    exports.showHowToDialog = showHowToDialog;
+    exports.isShowingHowToDialog = isShowingHowToDialog;
     
     // for unit testing
     exports.nodeConnection = nodeConnection;
