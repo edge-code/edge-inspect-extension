@@ -98,5 +98,16 @@ define({
 	"INSPECT_gettingstartedconnectingmanualconnectionp1": "接続したいコンピューターを検出できない場合は、「+」ボタンをタップして手動接続してください。お使いのコンピューターに関連付けられている IP アドレスは、Chrome 拡張機能の画面下部に表示されます。この IP アドレスを、デバイス上のテキストフィールドに入力してください。",
 	"INSPECT_gettingstartedconnectingmanualconnectionp2": "デバイスが Edge Inspect CC と接続されている間、減光やスリープ機能はオフになります。",
 	"INSPECT_gettingstartedremoteinspectionheader": "3. デバイス上でページの検査およびデバッグを実行する",
-	"INSPECT_gettingstartedremoteinspection": "Chrome 拡張機能で、検査またはデバッグを実行したいデバイスの横にある「&lt; &gt;」ボタンをクリックすると、開発者ツールウィンドウが開きます。リモート検査は一度に 1 台のデバイスに対してのみ実行できます。"
+	"INSPECT_gettingstartedremoteinspection": "Chrome 拡張機能で、検査またはデバッグを実行したいデバイスの横にある「&lt; &gt;」ボタンをクリックすると、開発者ツールウィンドウが開きます。リモート検査は一度に 1 台のデバイスに対してのみ実行できます。",
+
+	"PRODUCT_NAME": "!能=[7107260] Edge Inspect_=!",
+	"DIALOG_DONE": "完了",
+	"HOWTO_INTRO": "!能=[7107257] Adobe® Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript._=!",
+	"HOWTO_INSTRUCTIONS_1": "!能=[7107254] Install Edge Inspect on your device, and check that your device and computer are on the same network.  Both must be on the same subnet for auto-discovery._=!",
+	"HOWTO_INSTRUCTIONS_2": "!能=[7107255] If the device can't find your computer, use manual connection (+ button on the device).  Use your computer's IP Address or Host Name as displayed on the Edge Inspect extension, as shown above._=!",
+	"HOWTO_INSTRUCTIONS_3": "!能=[7107256] Once connected, Edge Inspect will preview the page on your device.  It will also keep the screen from dimming or going to sleep during preview._=!",
+	"HOWTO_DIAGRAM_IMAGE": "!能=[7107252] img/EdgeInspectInstructionImage.png_=!",
+	"HOWTO_DIAGRAM_IMAGE_HIDPI": "!能=[7107253] img/EdgeInspectInstructionImage@2x.png_=!",
+	"INSPECT_showhowto": "!能=[7107259] Getting started..._=!",
+	"INSPECT_needhelp": "!能=[7107258] <a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">Need help? Ask the Adobe Community...</a>_=!"
 });
