@@ -98,5 +98,16 @@ define({
     "INSPECT_gettingstartedconnectingmanualconnectionp1"     : "If you can't find the computer you want to connect to, tap the \"+\" button to perform a Manual Connect. A list of IP Addresses associated with your computer is located at the bottom of the Chrome Extension. Insert the IP Address into the text field on the device.",
     "INSPECT_gettingstartedconnectingmanualconnectionp2"     : "When a device is connected, Edge Inspect CC will prevent the screen from dimming or going to sleep.",
     "INSPECT_gettingstartedremoteinspectionheader"           : "3. Inspecting &amp; debugging the page on your device",
-    "INSPECT_gettingstartedremoteinspection"                 : " In the Chrome Extension, click on the \"&lt; &gt;\" button next to the device you'd like to inspect or debug and the Developer Tools window will open; you can use remote inspection on one device at a time."
+    "INSPECT_gettingstartedremoteinspection"                 : " In the Chrome Extension, click on the \"&lt; &gt;\" button next to the device you'd like to inspect or debug and the Developer Tools window will open; you can use remote inspection on one device at a time.",
+
+    "PRODUCT_NAME"                                           : "Edge Inspect",
+    "DIALOG_DONE"                                            : "Done",
+    "HOWTO_INTRO"                                            : "Adobe® Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript.",
+    "HOWTO_INSTRUCTIONS_1"                                   : "Install Edge Inspect on your device, and check that your device and computer are on the same network.  Both must be on the same subnet for auto-discovery.",
+    "HOWTO_INSTRUCTIONS_2"                                   : "If the device can't find your computer, use manual connection (+ button on the device).  Use your computer's IP Address or Host Name as displayed on the Edge Inspect extension, as shown above.",
+    "HOWTO_INSTRUCTIONS_3"                                   : "Once connected, Edge Inspect will preview the page on your device.  It will also keep the screen from dimming or going to sleep during preview.",
+    "HOWTO_DIAGRAM_IMAGE"                                    : "img/EdgeInspectInstructionImage.png",
+    "HOWTO_DIAGRAM_IMAGE_HIDPI"                              : "img/EdgeInspectInstructionImage@2x.png",
+    "INSPECT_showhowto"                                      : "Getting started...",
+    "INSPECT_needhelp"                                       : "<a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">Need help? Ask the Adobe Community...</a>"
 });

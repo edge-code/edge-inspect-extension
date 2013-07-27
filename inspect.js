@@ -32,16 +32,22 @@ define(function (require, exports, module) {
         LanguageManager     = brackets.getModule("language/LanguageManager"),
         ExtensionUtils      = brackets.getModule("utils/ExtensionUtils"),
         NodeConnection      = brackets.getModule("utils/NodeConnection"),
-        ProjectManager      = brackets.getModule("project/ProjectManager");
+        ProjectManager      = brackets.getModule("project/ProjectManager"),
+        PreferencesManager  = brackets.getModule("preferences/PreferencesManager");
     
     var inspectHtml         = require("text!htmlContent/inspect.html"),
         SkyLabController    = require("lib/inspect/skylab").SkyLabController,
         SkyLabPopup         = require("lib/inspect/skylabpopup"),
         SkyLabView          = require("lib/inspect/skylabview"),
         Strings             = require("strings");
+    
+    var Dialogs             = brackets.getModule("widgets/Dialogs"),
+        inspectHowtoDialogHtml  = require("text!htmlContent/inspect-howto-dialog.html");
         
-    var $inspect,
+    var $body = $("body"),
+        $inspect,
         $inspectPopoverArrow,
+        $toolbarIcon,
         inspectEnabled = false,
         inspectShown = false,
         deviceManagerInitialized = false,
@@ -50,6 +56,24 @@ define(function (require, exports, module) {
         currentURL = null,
         nodeConnection = new NodeConnection(),
         inspectPromise;
+    
+    var GETTING_STARTED_KEY = "hasShownGettingStarted";
+    
+    var prefs = PreferencesManager.getPreferenceStorage(module),
+        firstRun = prefs.getValue(GETTING_STARTED_KEY);
+    
+    var Paths = {
+        ROOT : require.toUrl('./')
+    };
+    
+    // Rendered templates
+    var inspectHowtoDialogTemplate = Mustache.render(inspectHowtoDialogHtml, {Strings : Strings, Paths : Paths});
+    
+    // work around a URL jQuery URL escaping issue
+    var howtoDiagramURL      = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}",
+                                               {Strings : Strings, Paths : Paths}),
+        howtoDiagramHiDPIURL = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}",
+                                               {Strings : Strings, Paths : Paths});
     
     /**
      * For a given event name, build a new event name from within the Inspect
@@ -396,30 +420,39 @@ define(function (require, exports, module) {
             $(SkyLabController).trigger("close.popup");
         });
         
-        $("body").off(inspectEvent());
+        $body.off(inspectEvent());
         inspectShown = false;
     }
 
     /**
+     * Handle input when the popover is displayed.  Specifically, close the popover if the user clicks outside of the window.
+     */
+    function handleInput(event) {
+        function inTree($jqObj) {
+            return $jqObj[0] === event.target ||
+                $jqObj.find(event.target).length > 0;
+        }
+        
+        if ($body.find(".modal-backdrop").length > 0) {
+            return;
+        }
+        
+        if (!inTree($inspect) &&
+                !inTree($inspectPopoverArrow) &&
+                !inTree($toolbarIcon)) {
+            hideControls();
+        }
+    }
+    
+    /**
      * Show the Inspect popover.
      */
     function showControls() {
-        var $toolbarIcon    = $("#inspect-toolbar"),
-            iconOffset      = $toolbarIcon.offset().top,
+        $toolbarIcon = $("#inspect-toolbar");
+        
+        var iconOffset      = $toolbarIcon.offset().top,
             inspectTop      = iconOffset - 20,
             arrowTop        = inspectTop + 22;
-        
-        function handleInput(event) {
-            function inTree($jqObj) {
-                return $jqObj[0] === event.target ||
-                    $jqObj.find(event.target).length > 0;
-            }
-            if (!inTree($inspect) &&
-                    !inTree($inspectPopoverArrow) &&
-                    !inTree($toolbarIcon)) {
-                hideControls();
-            }
-        }
         
         if (!deviceManagerInitialized) {
             initDeviceManager();
@@ -430,8 +463,18 @@ define(function (require, exports, module) {
         $inspect.addClass("visible");
         $inspectPopoverArrow.addClass("visible");
         
-        $("body").on(inspectEvent("keyup", "mousedown"), handleInput);
+        $body.on(inspectEvent("keyup", "mousedown"), handleInput);
         inspectShown = true;
+    }
+
+    /**
+     * show how-to dialog with" Getting Started" instructions    
+     */
+    function showHowToDialog() {
+        var $howToDialog = Dialogs.showModalDialogUsingTemplate(inspectHowtoDialogTemplate);
+        $howToDialog.getElement().find(".close").on("click", $howToDialog.close.bind($howToDialog));
+        
+        $(".inspect-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
     }
     
     /**
@@ -442,6 +485,14 @@ define(function (require, exports, module) {
             hideControls();
         } else {
             showControls();
+        }
+        
+        // if this is the first time that the Inspect extension has been launched,
+        //    then show the Getting Started dialog.
+        if (!firstRun) {
+            showHowToDialog();
+            firstRun = true;
+            prefs.setValue(GETTING_STARTED_KEY, true);
         }
     }
     
@@ -454,7 +505,7 @@ define(function (require, exports, module) {
      */
     function initAdmin() {
         var $mainContent = Mustache.render(inspectHtml, Strings);
-        $("body").append($mainContent);
+        $body.append($mainContent);
         
         $inspect = $("#inspect");
         $inspectPopoverArrow = $(".inspectPopoverArrow");
@@ -471,6 +522,7 @@ define(function (require, exports, module) {
     exports.initAdmin = initAdmin;
     exports.initDeviceManager = initDeviceManager;
     exports.handleInspectControls = handleInspectControls;
+    exports.showHowToDialog = showHowToDialog;
     
     // for unit testing
     exports.nodeConnection = nodeConnection;
