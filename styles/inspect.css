@@ -11,7 +11,7 @@
 
 .inspectPopoverArrow {
     position: absolute;
-    z-index: 5000;
+    z-index: 500;
     top: 42px; /* dynamically adjusted */
     right: 15px;
     width: 30px;
@@ -39,7 +39,7 @@
     right: 35px;
     position: absolute;
     background-color: #dfe2e2;
-    z-index: 5000;
+    z-index: 500;
     cursor: default;
     -webkit-font-smoothing: antialiased;
     border-radius: 5px;
@@ -612,6 +612,30 @@
     background: no-repeat -webkit-image-set(url("../img/breadcrumb.png") 1x, url("../img/breadcrumb@2x.png") 2x);
 }
 
+
+
+/**
+ *  Inspect-specific Dialog Styling
+ */
+.inspect-howto-dialog .dialog-message {
+    margin-bottom: 0px;
+}
+.inspect-howto-dialog li {
+    margin-bottom: .4em;
+    line-height: 20px;
+}
+.inspect-howto-diagram {
+    width: 479px;
+    height: 195px;
+    margin: 15px 0px 15px 25px;
+    background-repeat: no-repeat;
+}
+.inspect-howto-dialog .inspect-needhelp {
+  position: relative;
+  float: left;
+  top: 7px;
+  left: 3px;
+}
 
 
 /**
