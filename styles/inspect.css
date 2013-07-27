@@ -11,7 +11,7 @@
 
 .inspectPopoverArrow {
     position: absolute;
-    z-index: 5000;
+    z-index: 500;
     top: 42px; /* dynamically adjusted */
     right: 15px;
     width: 30px;
@@ -39,7 +39,7 @@
     right: 35px;
     position: absolute;
     background-color: #dfe2e2;
-    z-index: 5000;
+    z-index: 500;
     cursor: default;
     -webkit-font-smoothing: antialiased;
     border-radius: 5px;

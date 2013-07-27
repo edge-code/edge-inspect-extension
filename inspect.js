@@ -44,10 +44,10 @@ define(function (require, exports, module) {
     var Dialogs             = brackets.getModule("widgets/Dialogs"),
         inspectHowtoDialogHtml  = require("text!htmlContent/inspect-howto-dialog.html");
         
-    var $inspect,
+    var $body = $("body"),
+        $inspect,
         $inspectPopoverArrow,
         $toolbarIcon,
-        $howToDialog,
         inspectEnabled = false,
         inspectShown = false,
         deviceManagerInitialized = false,
@@ -57,9 +57,23 @@ define(function (require, exports, module) {
         nodeConnection = new NodeConnection(),
         inspectPromise;
     
-    var prefs = PreferencesManager.getPreferenceStorage(module);
-    //TODO: Remove preferences migration code
-    PreferencesManager.handleClientIdChange(prefs, "com.adobe.brackets.edge-inspect-extension");
+    var GETTING_STARTED_KEY = "hasShownGettingStarted";
+    
+    var prefs = PreferencesManager.getPreferenceStorage(module),
+        firstRun = prefs.getValue(GETTING_STARTED_KEY);
+    
+    var Paths = {
+        ROOT : require.toUrl('./')
+    };
+    
+    // Rendered templates
+    var inspectHowtoDialogTemplate = Mustache.render(inspectHowtoDialogHtml, {Strings : Strings, Paths : Paths});
+    
+    // work around a URL jQuery URL escaping issue
+    var howtoDiagramURL      = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}",
+                                               {Strings : Strings, Paths : Paths}),
+        howtoDiagramHiDPIURL = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}",
+                                               {Strings : Strings, Paths : Paths});
     
     /**
      * For a given event name, build a new event name from within the Inspect
@@ -406,7 +420,7 @@ define(function (require, exports, module) {
             $(SkyLabController).trigger("close.popup");
         });
         
-        $("body").off(inspectEvent());
+        $body.off(inspectEvent());
         inspectShown = false;
     }
 
@@ -418,6 +432,11 @@ define(function (require, exports, module) {
             return $jqObj[0] === event.target ||
                 $jqObj.find(event.target).length > 0;
         }
+        
+        if ($body.find(".modal-backdrop").length > 0) {
+            return;
+        }
+        
         if (!inTree($inspect) &&
                 !inTree($inspectPopoverArrow) &&
                 !inTree($toolbarIcon)) {
@@ -444,45 +463,16 @@ define(function (require, exports, module) {
         $inspect.addClass("visible");
         $inspectPopoverArrow.addClass("visible");
         
-        $("body").on(inspectEvent("keyup", "mousedown"), handleInput);
+        $body.on(inspectEvent("keyup", "mousedown"), handleInput);
         inspectShown = true;
     }
-    
-    var Paths = {
-        ROOT : require.toUrl('./')
-    };
-    
-    // Rendered templates
-    var inspectHowtoDialogTemplate = Mustache.render(inspectHowtoDialogHtml, {Strings : Strings, Paths : Paths});
-    
-    // work around a URL jQuery URL escaping issue
-    var howtoDiagramURL      = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE}}}", {Strings : Strings, Paths : Paths}),
-        howtoDiagramHiDPIURL = Mustache.render("{{{Paths.ROOT}}}{{{Strings.HOWTO_DIAGRAM_IMAGE_HIDPI}}}", {Strings : Strings, Paths : Paths});
-    
-    /**
-     * returns true if the Getting Started dialog is being displayed
-     */
-    function isShowingHowToDialog() {
-        return ($howToDialog !== undefined) ? true : false;
-    }
-    
+
     /**
      * show how-to dialog with" Getting Started" instructions    
      */
     function showHowToDialog() {
-        if (isShowingHowToDialog())
-            return; // don't allow multiple instances
-        
-        // temporarily disable input handling on the popup
-        $("body").off(inspectEvent());
-        
-        $howToDialog = Dialogs.showModalDialogUsingTemplate(inspectHowtoDialogTemplate);
+        var $howToDialog = Dialogs.showModalDialogUsingTemplate(inspectHowtoDialogTemplate);
         $howToDialog.getElement().find(".close").on("click", $howToDialog.close.bind($howToDialog));
-        $howToDialog.done(function () {
-            // when the dialog closes, then restore the input handler to the popup
-            $("body").on(inspectEvent("keyup", "mousedown"), handleInput);
-            $howToDialog = undefined;
-        });
         
         $(".inspect-howto-diagram").css("background-image", "-webkit-image-set(url('" + howtoDiagramURL + "') 1x, url('" + howtoDiagramHiDPIURL + "') 2x)");
     }
@@ -499,9 +489,10 @@ define(function (require, exports, module) {
         
         // if this is the first time that the Inspect extension has been launched,
         //    then show the Getting Started dialog.
-        if (!prefs.getValue("hasShownGettingStarted")) {
+        if (!firstRun) {
             showHowToDialog();
-            prefs.setValue("hasShownGettingStarted", true);
+            firstRun = true;
+            prefs.setValue(GETTING_STARTED_KEY, true);
         }
     }
     
@@ -514,7 +505,7 @@ define(function (require, exports, module) {
      */
     function initAdmin() {
         var $mainContent = Mustache.render(inspectHtml, Strings);
-        $("body").append($mainContent);
+        $body.append($mainContent);
         
         $inspect = $("#inspect");
         $inspectPopoverArrow = $(".inspectPopoverArrow");
@@ -532,7 +523,6 @@ define(function (require, exports, module) {
     exports.initDeviceManager = initDeviceManager;
     exports.handleInspectControls = handleInspectControls;
     exports.showHowToDialog = showHowToDialog;
-    exports.isShowingHowToDialog = isShowingHowToDialog;
     
     // for unit testing
     exports.nodeConnection = nodeConnection;
