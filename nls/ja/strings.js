@@ -100,14 +100,14 @@ define({
 	"INSPECT_gettingstartedremoteinspectionheader": "3. デバイス上でページの検査およびデバッグを実行する",
 	"INSPECT_gettingstartedremoteinspection": "Chrome 拡張機能で、検査またはデバッグを実行したいデバイスの横にある「&lt; &gt;」ボタンをクリックすると、開発者ツールウィンドウが開きます。リモート検査は一度に 1 台のデバイスに対してのみ実行できます。",
 
-	"PRODUCT_NAME": "!能=[7107260] Edge Inspect_=!",
+	"PRODUCT_NAME": "Edge Inspect",
 	"DIALOG_DONE": "完了",
-	"HOWTO_INTRO": "!能=[7107257] Adobe® Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript._=!",
-	"HOWTO_INSTRUCTIONS_1": "!能=[7107254] Install Edge Inspect on your device, and check that your device and computer are on the same network.  Both must be on the same subnet for auto-discovery._=!",
-	"HOWTO_INSTRUCTIONS_2": "!能=[7107255] If the device can't find your computer, use manual connection (+ button on the device).  Use your computer's IP Address or Host Name as displayed on the Edge Inspect extension, as shown above._=!",
-	"HOWTO_INSTRUCTIONS_3": "!能=[7107256] Once connected, Edge Inspect will preview the page on your device.  It will also keep the screen from dimming or going to sleep during preview._=!",
-	"HOWTO_DIAGRAM_IMAGE": "!能=[7107252] img/EdgeInspectInstructionImage.png_=!",
-	"HOWTO_DIAGRAM_IMAGE_HIDPI": "!能=[7107253] img/EdgeInspectInstructionImage@2x.png_=!",
-	"INSPECT_showhowto": "!能=[7107259] Getting started..._=!",
-	"INSPECT_needhelp": "!能=[7107258] <a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">Need help? Ask the Adobe Community...</a>_=!"
+	"HOWTO_INTRO": "Adobe® Edge Inspect はモバイルブラウザー向けに Web デザインおよび開発を行うための製品です。Edge Inspect をインストールすると、複数のモバイルデバイスでプレビューができます。さらに複数の iOS および Android デバイスをコンピューターとワイヤレスでペアリングしたり、接続されているデバイスで撮影したスクリーンショットを収集したり、HTML、CSS、JavaScript に加えた変更を即座にデバイス上でテストしたりできます。",
+	"HOWTO_INSTRUCTIONS_1": "デバイスに Edge Inspect をインストールし、デバイスとコンピューターが同じネットワーク上に属していることを確認してください。自動検出するにはサブネットも同じである必要があります。",
+	"HOWTO_INSTRUCTIONS_2": "デバイスがコンピューターを検出できない場合は、(デバイスの「+」ボタンで) 手動接続を行ってください。Edge Inspect 拡張機能に表示されているコンピューターの IP アドレスまたはホスト名を使用してください (上の画像参照)。",
+	"HOWTO_INSTRUCTIONS_3": "接続に成功したら、Edge Inspect はプレビューページをデバイスに表示します。プレビュー中はスクリーンセーバーやスリープモードはオフになります。",
+	"HOWTO_DIAGRAM_IMAGE": "img/EdgeInspectInstructionImage.png",
+	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/EdgeInspectInstructionImage@2x.png",
+	"INSPECT_showhowto": "はじめに...",
+	"INSPECT_needhelp": "<a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">アドビコミュニティで質問...</a>"
 });

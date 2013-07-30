@@ -100,14 +100,14 @@ define({
 	"INSPECT_gettingstartedremoteinspectionheader": "3. Inspecter et déboguer la page sur le périphérique",
 	"INSPECT_gettingstartedremoteinspection": " Dans l’extension Chrome, cliquez sur le bouton \"&lt; &gt;\" figurant à côté de l’appareil que vous souhaitez inspecter ou déboguer. La fenêtre d’outils de développement s’affiche. Vous ne pouvez utiliser l’inspection à distance que sur un périphérique à la fois.",
 
-	"PRODUCT_NAME": "[7107260] !é=Edge Inspect=!",
+	"PRODUCT_NAME": "Edge Inspect",
 	"DIALOG_DONE": "Terminé",
-	"HOWTO_INTRO": "[7107257] !é=Adobe® Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript.=!",
-	"HOWTO_INSTRUCTIONS_1": "[7107254] !é=Install Edge Inspect on your device, and check that your device and computer are on the same network.  Both must be on the same subnet for auto-discovery.=!",
-	"HOWTO_INSTRUCTIONS_2": "[7107255] !é=If the device can't find your computer, use manual connection (+ button on the device).  Use your computer's IP Address or Host Name as displayed on the Edge Inspect extension, as shown above.=!",
-	"HOWTO_INSTRUCTIONS_3": "[7107256] !é=Once connected, Edge Inspect will preview the page on your device.  It will also keep the screen from dimming or going to sleep during preview.=!",
-	"HOWTO_DIAGRAM_IMAGE": "[7107252] !é=img/EdgeInspectInstructionImage.png=!",
-	"HOWTO_DIAGRAM_IMAGE_HIDPI": "[7107253] !é=img/EdgeInspectInstructionImage@2x.png=!",
-	"INSPECT_showhowto": "[7107259] !é=Getting started...=!",
-	"INSPECT_needhelp": "[7107258] !é=<a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">Need help? Ask the Adobe Community...</a>=!"
+	"HOWTO_INTRO": "Adobe® Edge Inspect est destiné aux designers et développeurs web spécialisés dans les navigateurs mobiles. Avec Edge Inspect installé, vous pouvez afficher des aperçus de vos contenus sur différents appareils mobiles. Établissez une connexion sans fil entre des terminaux iOS et Android et votre ordinateur, réalisez des captures d’écran sur les terminaux connectés et découvrez en temps réel le résultat des modifications apportées aux codes HTML, CSS et JavaScript.",
+	"HOWTO_INSTRUCTIONS_1": "Installez Edge Inspect sur votre périphérique et vérifiez que celui-ci et votre ordinateur sont connectés au même réseau. Pour permettre l’identification automatique, les deux appareils doivent se trouver sur le même sous-réseau.",
+	"HOWTO_INSTRUCTIONS_2": "Si le périphérique ne détecte pas votre ordinateur, utilisez la connexion manuelle (bouton + sur le périphérique). Indiquez l’adresse IP ou le nom d’hôte de votre ordinateur tels qu’ils s’affichent dans l’extension Edge Inspect, illustrée ci-dessus.",
+	"HOWTO_INSTRUCTIONS_3": "Une fois la connexion établie, Edge Inspect affiche un aperçu de la page sur votre périphérique. L’application empêche également toute mise en veille ou réduction de luminosité de l’écran pendant l’aperçu.",
+	"HOWTO_DIAGRAM_IMAGE": "img/EdgeInspectInstructionImage.png",
+	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/EdgeInspectInstructionImage@2x.png",
+	"INSPECT_showhowto": "Mise en route...",
+	"INSPECT_needhelp": "<a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">Besoin d’aide ? Posez une question sur Adobe Community...</a>"
 });
