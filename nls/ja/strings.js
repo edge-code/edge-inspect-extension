@@ -26,10 +26,10 @@
 
 define({
 	"GENERATE_INSPECT_CONTROLS": "edgeinspect.handleinspectcontrols",
-	"TOGGLE_ON_IMG": "slideswitch_on_localized.png",
-	"TOGGLE_ON_IMG_HIDPI": "slideswitch_on_localized@2x.png",
-	"TOGGLE_OFF_IMG": "slideswitch_off_localized.png",
-	"TOGGLE_OFF_IMG_HIDPI": "slideswitch_off_localized@2x.png",
+	"TOGGLE_ON_IMG": "slideswitch_on.png",
+	"TOGGLE_ON_IMG_HIDPI": "slideswitch_on@2x.png",
+	"TOGGLE_OFF_IMG": "slideswitch_off.png",
+	"TOGGLE_OFF_IMG_HIDPI": "slideswitch_off@2x.png",
     
    // for inspect
 	"INSPECT_BUTTON": "Edge Inspect CC を使用してデバイス上でプレビューを実行",
@@ -98,5 +98,16 @@ define({
 	"INSPECT_gettingstartedconnectingmanualconnectionp1": "接続したいコンピューターを検出できない場合は、「+」ボタンをタップして手動接続してください。お使いのコンピューターに関連付けられている IP アドレスは、Chrome 拡張機能の画面下部に表示されます。この IP アドレスを、デバイス上のテキストフィールドに入力してください。",
 	"INSPECT_gettingstartedconnectingmanualconnectionp2": "デバイスが Edge Inspect CC と接続されている間、減光やスリープ機能はオフになります。",
 	"INSPECT_gettingstartedremoteinspectionheader": "3. デバイス上でページの検査およびデバッグを実行する",
-	"INSPECT_gettingstartedremoteinspection": "Chrome 拡張機能で、検査またはデバッグを実行したいデバイスの横にある「&lt; &gt;」ボタンをクリックすると、開発者ツールウィンドウが開きます。リモート検査は一度に 1 台のデバイスに対してのみ実行できます。"
+	"INSPECT_gettingstartedremoteinspection": "Chrome 拡張機能で、検査またはデバッグを実行したいデバイスの横にある「&lt; &gt;」ボタンをクリックすると、開発者ツールウィンドウが開きます。リモート検査は一度に 1 台のデバイスに対してのみ実行できます。",
+
+	"PRODUCT_NAME": "Edge Inspect",
+	"DIALOG_DONE": "完了",
+	"HOWTO_INTRO": "Adobe® Edge Inspect はモバイルブラウザー向けに Web デザインおよび開発を行うための製品です。Edge Inspect をインストールすると、複数のモバイルデバイスでプレビューができます。さらに複数の iOS および Android デバイスをコンピューターとワイヤレスでペアリングしたり、接続されているデバイスで撮影したスクリーンショットを収集したり、HTML、CSS、JavaScript に加えた変更を即座にデバイス上でテストしたりできます。",
+	"HOWTO_INSTRUCTIONS_1": "デバイスに Edge Inspect をインストールし、デバイスとコンピューターが同じネットワーク上に属していることを確認してください。自動検出するにはサブネットも同じである必要があります。",
+	"HOWTO_INSTRUCTIONS_2": "デバイスがコンピューターを検出できない場合は、(デバイスの「+」ボタンで) 手動接続を行ってください。Edge Inspect 拡張機能に表示されているコンピューターの IP アドレスまたはホスト名を使用してください (上の画像参照)。",
+	"HOWTO_INSTRUCTIONS_3": "接続に成功したら、Edge Inspect はプレビューページをデバイスに表示します。プレビュー中はスクリーンセーバーやスリープモードはオフになります。",
+	"HOWTO_DIAGRAM_IMAGE": "img/EdgeInspectInstructionImage.png",
+	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/EdgeInspectInstructionImage@2x.png",
+	"INSPECT_showhowto": "はじめに...",
+	"INSPECT_needhelp": "<a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">アドビコミュニティで質問...</a>"
 });
