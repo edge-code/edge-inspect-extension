@@ -106,8 +106,8 @@ define({
 	"HOWTO_INSTRUCTIONS_1": "Installez Edge Inspect sur votre périphérique et vérifiez que celui-ci et votre ordinateur sont connectés au même réseau. Pour permettre l’identification automatique, les deux appareils doivent se trouver sur le même sous-réseau.",
 	"HOWTO_INSTRUCTIONS_2": "Si le périphérique ne détecte pas votre ordinateur, utilisez la connexion manuelle (bouton + sur le périphérique). Indiquez l’adresse IP ou le nom d’hôte de votre ordinateur tels qu’ils s’affichent dans l’extension Edge Inspect, illustrée ci-dessus.",
 	"HOWTO_INSTRUCTIONS_3": "Une fois la connexion établie, Edge Inspect affiche un aperçu de la page sur votre périphérique. L’application empêche également toute mise en veille ou réduction de luminosité de l’écran pendant l’aperçu.",
-	"HOWTO_DIAGRAM_IMAGE": "img/EdgeInspectInstructionImage.png",
-	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/EdgeInspectInstructionImage@2x.png",
+	"HOWTO_DIAGRAM_IMAGE": "img/EdgeInspectInstructionImage_FR.png",
+	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/EdgeInspectInstructionImage@2x_FR.png",
 	"INSPECT_showhowto": "Mise en route...",
 	"INSPECT_needhelp": "<a class=\"clickable-link\" data-href=\"http://forums.adobe.com/community/edge_inspect/report_a_problem\">Besoin d’aide ? Posez une question sur Adobe Community...</a>"
 });
