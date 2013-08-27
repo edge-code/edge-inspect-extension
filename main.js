@@ -56,7 +56,7 @@ define(function (require, exports, module) {
         // Add the toolbar icon to the toolbar in a disabled state       
         $toolbarIcon = $(Mustache.render(inspectToolbarHtml, Strings))
             .addClass("inactive")
-            .insertAfter("#toolbar-go-live")
+            .appendTo("#main-toolbar > .buttons")
             .attr("title", Strings.INSPECT_BUTTON);
         
         // Initialize the Inspect administrator
