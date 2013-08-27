@@ -46,7 +46,6 @@ define(function (require, exports, module) {
         
     var $body = $("body"),
         $inspect,
-        $inspectPopoverArrow,
         $toolbarIcon,
         inspectEnabled = false,
         inspectShown = false,
@@ -415,8 +414,6 @@ define(function (require, exports, module) {
         $("#inspect, .inspectPopoverArrow").fadeOut(50, function () {
             $inspect.css("display", "");
             $inspect.removeClass("visible");
-            $inspectPopoverArrow.css("display", "");
-            $inspectPopoverArrow.removeClass("visible");
             $(SkyLabController).trigger("close.popup");
         });
         
@@ -437,9 +434,7 @@ define(function (require, exports, module) {
             return;
         }
         
-        if (!inTree($inspect) &&
-                !inTree($inspectPopoverArrow) &&
-                !inTree($toolbarIcon)) {
+        if (!inTree($inspect) && !inTree($toolbarIcon)) {
             hideControls();
         }
     }
@@ -451,17 +446,14 @@ define(function (require, exports, module) {
         $toolbarIcon = $("#inspect-toolbar");
         
         var iconOffset      = $toolbarIcon.offset().top,
-            inspectTop      = iconOffset - 20,
-            arrowTop        = inspectTop + 22;
+            inspectTop      = iconOffset - 20;
         
         if (!deviceManagerInitialized) {
             initDeviceManager();
         }
         
         $inspect.css("top", inspectTop);
-        $inspectPopoverArrow.css("top", arrowTop);
         $inspect.addClass("visible");
-        $inspectPopoverArrow.addClass("visible");
         
         $body.on(inspectEvent("keyup", "mousedown"), handleInput);
         inspectShown = true;
@@ -508,7 +500,6 @@ define(function (require, exports, module) {
         $body.append($mainContent);
         
         $inspect = $("#inspect");
-        $inspectPopoverArrow = $(".inspectPopoverArrow");
         $inspect.on("Inspect:followtoggle", onFollowToggle);
         $inspect.on("Inspect:refreshCurrentUrl", function () {
             if (inspectEnabled) {
