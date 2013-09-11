@@ -102,7 +102,7 @@ define({
 
 	"PRODUCT_NAME": "Edge Inspect",
 	"DIALOG_DONE": "Terminé",
-	"HOWTO_INTRO": "[7107257] !é=Adobe Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript.=!",
+	"HOWTO_INTRO": "Adobe Edge Inspect est destiné aux designers et développeurs web spécialisés dans les navigateurs mobiles. Avec Edge Inspect installé, vous pouvez afficher des aperçus de vos contenus sur différents appareils mobiles. Établissez une connexion sans fil entre des terminaux iOS et Android et votre ordinateur, réalisez des captures d’écran sur les terminaux connectés et découvrez en temps réel le résultat des modifications apportées aux codes HTML, CSS et JavaScript.",
 	"HOWTO_INSTRUCTIONS_1": "Installez Edge Inspect sur votre périphérique et vérifiez que celui-ci et votre ordinateur sont connectés au même réseau. Pour permettre l’identification automatique, les deux appareils doivent se trouver sur le même sous-réseau.",
 	"HOWTO_INSTRUCTIONS_2": "Si le périphérique ne détecte pas votre ordinateur, utilisez la connexion manuelle (bouton + sur le périphérique). Indiquez l’adresse IP ou le nom d’hôte de votre ordinateur tels qu’ils s’affichent dans l’extension Edge Inspect, illustrée ci-dessus.",
 	"HOWTO_INSTRUCTIONS_3": "Une fois la connexion établie, Edge Inspect affiche un aperçu de la page sur votre périphérique. L’application empêche également toute mise en veille ou réduction de luminosité de l’écran pendant l’aperçu.",
