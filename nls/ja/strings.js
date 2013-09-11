@@ -102,7 +102,7 @@ define({
 
 	"PRODUCT_NAME": "Edge Inspect",
 	"DIALOG_DONE": "完了",
-	"HOWTO_INTRO": "Adobe Edge Inspect はモバイルブラウザー向けに Web デザインおよび開発を行うための製品です。Edge Inspect をインストールすると、複数のモバイルデバイスでプレビューができます。さらに複数の iOS および Android デバイスをコンピューターとワイヤレスでペアリングしたり、接続されているデバイスで撮影したスクリーンショットを収集したり、HTML、CSS、JavaScript に加えた変更を即座にデバイス上でテストしたりできます。",
+	"HOWTO_INTRO": "!能=[7107257] Adobe Edge Inspect is for web designers and developers targeting mobile browsers.  Installing Edge Inspect allows you to preview content across multiple mobile devices. Wirelessly pair multiple iOS and Android devices to your computer, grab screenshots from any connected device, and see real-time results from changes to HTML, CSS, and JavaScript._=!",
 	"HOWTO_INSTRUCTIONS_1": "デバイスに Edge Inspect をインストールし、デバイスとコンピューターが同じネットワーク上に属していることを確認してください。自動検出するにはサブネットも同じである必要があります。",
 	"HOWTO_INSTRUCTIONS_2": "デバイスがコンピューターを検出できない場合は、(デバイスの「+」ボタンで) 手動接続を行ってください。Edge Inspect 拡張機能に表示されているコンピューターの IP アドレスまたはホスト名を使用してください (上の画像参照)。",
 	"HOWTO_INSTRUCTIONS_3": "接続に成功したら、Edge Inspect はプレビューページをデバイスに表示します。プレビュー中はスクリーンセーバーやスリープモードはオフになります。",
