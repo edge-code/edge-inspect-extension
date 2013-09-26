@@ -9,8 +9,5 @@
     "repository" : { 
         "type" : "git",
         "url" : "https://github.com/edge-code/edge-inspect-extension.git"
-    },
-    "engines": {
-        "brackets": ">=0.32.0"
     }
 }
