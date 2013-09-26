@@ -1,8 +1,8 @@
 {
     "name": "edge-inspect-extension",
-    "title": "Edge Inspect extension for Brackets and Edge Code",
-    "description": "Instantly preview web content on mobile devices with Adobe Edge Inspect.",
-    "version": "0.2.0",
+    "title": "Adobe Edge Inspect",
+    "description": "Instantly preview web content on mobile devices. This extension requires Adobe Edge Inspect to be installed locally.",
+    "version": "0.1.2",
     "keywords": [".css", ".html", ".js"],
     "homepage": "http://html.adobe.com/edge/inspect/",
     "bugs": "https://github.com/edge-code/edge-inspect-extension/issues",
