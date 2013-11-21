@@ -109,5 +109,5 @@ define({
 	"HOWTO_DIAGRAM_IMAGE": "img/EdgeInspectInstructionImage.png",
 	"HOWTO_DIAGRAM_IMAGE_HIDPI": "img/EdgeInspectInstructionImage@2x.png",
 	"INSPECT_showhowto": "はじめに...",
-	"INSPECT_needhelp": "<a href='http://forums.adobe.com/community/edge_inspect'>アドビコミュニティで質問...</a>"
+	"INSPECT_needhelp": "!能=[7107258] <a href='http://forums.adobe.com/community/edge_inspect'>Need help? Ask the Adobe Community...</a>_=!"
 });
