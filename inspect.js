@@ -58,8 +58,8 @@ define(function (require, exports, module) {
     
     var GETTING_STARTED_KEY = "hasShownGettingStarted";
     
-    var prefs = PreferencesManager.getPreferenceStorage(module),
-        firstRun = prefs.getValue(GETTING_STARTED_KEY);
+    var prefs = PreferencesManager.getExtensionPrefs("edge-code-inspect"),
+        firstRun = prefs.get(GETTING_STARTED_KEY);
     
     var Paths = {
         ROOT : require.toUrl('./')
@@ -484,7 +484,8 @@ define(function (require, exports, module) {
         if (!firstRun) {
             showHowToDialog();
             firstRun = true;
-            prefs.setValue(GETTING_STARTED_KEY, true);
+            prefs.set(GETTING_STARTED_KEY, true);
+            prefs.save();
         }
     }
     
@@ -509,6 +510,10 @@ define(function (require, exports, module) {
         
         return nodeConnection.connect(true);
     }
+    
+    PreferencesManager.convertPreferences(module, {
+        GETTING_STARTED_KEY: "edge-code-inspect " + GETTING_STARTED_KEY
+    });
     
     exports.initAdmin = initAdmin;
     exports.initDeviceManager = initDeviceManager;
