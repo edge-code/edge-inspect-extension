@@ -511,9 +511,7 @@ define(function (require, exports, module) {
         return nodeConnection.connect(true);
     }
     
-    PreferencesManager.convertPreferences(module, {
-        GETTING_STARTED_KEY: "edge-code-inspect " + GETTING_STARTED_KEY
-    });
+    PreferencesManager.convertPreferences(module, { "hasShownGettingStarted": "user" });
     
     exports.initAdmin = initAdmin;
     exports.initDeviceManager = initDeviceManager;
