@@ -58,8 +58,9 @@ define(function (require, exports, module) {
     
     var GETTING_STARTED_KEY = "hasShownGettingStarted";
     
-    var prefs = PreferencesManager.getExtensionPrefs("edge-code-inspect"),
-        firstRun = prefs.get(GETTING_STARTED_KEY);
+    var prefs = PreferencesManager.getExtensionPrefs("edge-code-inspect");
+    PreferencesManager.convertPreferences(module, { "hasShownGettingStarted": "user edge-code-inspect.hasShownGettingStarted" });
+    var firstRun = prefs.get(GETTING_STARTED_KEY);
     
     var Paths = {
         ROOT : require.toUrl('./')
@@ -510,8 +511,6 @@ define(function (require, exports, module) {
         
         return nodeConnection.connect(true);
     }
-    
-    PreferencesManager.convertPreferences(module, { "hasShownGettingStarted": "user" });
     
     exports.initAdmin = initAdmin;
     exports.initDeviceManager = initDeviceManager;
